@@ -75,6 +75,9 @@
             prev[choice] = (group[key][obj.field].indexOf(choice) != -1);
             return prev;
           }, {});
+        } else if (fieldData.type === 'date') {
+          obj.subType = truthy ? 'equals' : 'notEquals';
+          obj.date = new Date(group[key][obj.field]);
         } else {
           obj.subType = truthy ? 'equals' : 'notEquals';
           obj.value = group[key][obj.field];

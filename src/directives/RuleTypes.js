@@ -63,7 +63,9 @@
           scope.today = function() {
             scope.rule.date = new Date();
           };
-          scope.today();
+          if (!scope.rule.date) {
+            scope.today();
+          }
 
           scope.clear = function() {
             scope.rule.date = null;
@@ -102,8 +104,6 @@
           ];
           scope.rule.dateFormat = scope.formats[0];
           scope.format = scope.rule.dateFormat;
-
-          scope.altInputFormats = ['M!/d!/yyyy'];
 
           scope.popup1 = { opened: false };
         },
