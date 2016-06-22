@@ -66,14 +66,12 @@
           if (!scope.rule.date) {
             scope.today();
           }
-
-          scope.open1 = function() {
-            scope.popup1.opened = true;
-          };
+          scope.rule.dateString = scope.rule.date.toString();
+          scope.$watch('rule.dateString', function () {
+            scope.rule.date = new Date(scope.rule.dateString);
+          });
 
           scope.rule.dateFormat = 'yyyy-MM-ddTHH:mm:ssZ';
-
-          scope.popup1 = { opened: false };
         },
 
       };
