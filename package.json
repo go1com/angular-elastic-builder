@@ -13,8 +13,6 @@
     "url": "https://github.com/dncrews/angular-elastic-builder.git"
   },
   "devDependencies": {
-    "angular-recursion": "^1.0.5",
-    "angular-ui-bootstrap": "^1.2.5",
     "del": "^1.2.1",
     "eslint": "^2.7.0",
     "express": "^4.13.4",

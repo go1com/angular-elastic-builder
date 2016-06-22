@@ -18,14 +18,26 @@ It's still pretty early on, as it doesn't support a whole lot of use-cases, but 
 ### Dependency
 Notice: this plugin requires:
   - the [Angular Recursion](https://github.com/marklagendijk/angular-recursion) module.
-  - the [Angular directives for Bootstrap](https://github.com/angular-ui/bootstrap) module to display the Calendar (ui.bootstrap.datepicker)
+  - the [Angular Bootstrap Datetime Picker](https://github.com/dalelotts/angular-bootstrap-datetimepicker) module to display the datetime picker.
 
 ### Installation
-First you'll need to download the [dist](https://github.com/dncrews/angular-elastic-builder/tree/master/dist) files and include this JS file to your app (don't forget to substitute `x.x.x` with the current version number), along with the RecursionHelper, if you're not already using it.
+Install angular elastic builder along with its dependencies.
+```
+bower install angular-elastic-builder-tienvx -S
+```
+Includes js and css files into your app.
 ```html
-<script type="text/javascript" src="angular-ui-bootstrap/ui-bootstrap-tpls.js"></script>
-<script type="text/javascript" src="angular-recursion/angular-recursion.min.js"></script>
-<script type="text/javascript" src="angular-elastic-builder/angular-elastic-builder.min.js"></script>
+<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="bower_components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="bower_components/moment/moment.js"></script>
+<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+<script type="text/javascript" src="bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
+<script type="text/javascript" src="bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js"></script>
+<script type="text/javascript" src="bower_components/angular-recursion/angular-recursion.min.js"></script>
+<script type="text/javascript" src="bower_components/angular-elastic-builder/dist/angular-elastic-builder.js"></script>
 ```
 
 Then make sure that it's included in your app's dependencies during module creation.

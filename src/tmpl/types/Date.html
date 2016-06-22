@@ -19,35 +19,19 @@
     </optgroup>
   </select>
 
-  <div class="form-group">
+  <div class="form-group" data-ng-if="inputNeeded()">
     <div class="input-group">
-      <input data-ng-if="inputNeeded()"
-        type="text"
-        class="form-control"
-        data-uib-datepicker-popup="{{ rule.dateFormat }}"
-        data-ng-model="rule.date"
-        data-is-open="popup1.opened"
-        data-datepicker-options="dateOptions"
-        data-ng-required="true"
-        data-close-text="Close" />
-      <div class="input-group-btn">
-        <button type="button" class="btn btn-default" ng-click="open1()" data-ng-if="inputNeeded()">
-          <i class="fa fa-calendar"></i>
-        </button>
+      <div class="dropdown">
+        <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="#">
+          <div class="input-group"><input type="text" class="form-control" data-ng-model="rule.date"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+          </div>
+        </a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+          <datetimepicker data-ng-model="rule.date" data-datetimepicker-config="{ dropdownSelector: '.dropdown-toggle' }"/>
+        </ul>
       </div>
     </div>
   </div>
-
-  <span class="form-inline">
-    <div class="form-group">
-      <label data-ng-if="inputNeeded()">Format</label>
-      <select
-        class="form-control"
-        data-ng-model="rule.dateFormat"
-        data-ng-if="inputNeeded()"
-        ng-options="f for f in formats"></select>
-    </div>
-  </span>
 
   <span data-ng-if="numberNeeded()">
     <input type="number" class="form-control" data-ng-model="rule.value" min=0> days

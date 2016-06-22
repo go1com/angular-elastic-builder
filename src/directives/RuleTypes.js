@@ -67,43 +67,11 @@
             scope.today();
           }
 
-          scope.clear = function() {
-            scope.rule.date = null;
-          };
-
-          scope.dateOptions = {
-            dateDisabled: disabled,
-            formatYear: 'yy',
-            maxDate: new Date(2018, 1, 13),
-            minDate: new Date(),
-            startingDay: 1,
-          };
-
-          // Disable weekend selection
-          function disabled(data) {
-            var date = data.date
-              , mode = data.mode;
-            return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
-          }
-
           scope.open1 = function() {
             scope.popup1.opened = true;
           };
 
-          scope.setDate = function(year, month, day) {
-            scope.rule.date = new Date(year, month - 1, day);
-          };
-
-          scope.formats = [
-            'yyyy-MM-ddTHH:mm:ss',
-            'yyyy-MM-ddTHH:mm:ssZ',
-            'yyyy-MM-dd',
-            'dd-MMMM-yyyy',
-            'yyyy/MM/dd',
-            'shortDate',
-          ];
-          scope.rule.dateFormat = scope.formats[0];
-          scope.format = scope.rule.dateFormat;
+          scope.rule.dateFormat = 'yyyy-MM-ddTHH:mm:ssZ';
 
           scope.popup1 = { opened: false };
         },
