@@ -39,14 +39,8 @@
   function parseQueryGroup(fieldMap, group, truthy) {
     if (truthy !== false) truthy = true;
 
-    var key = Object.keys(group)[0]
-      , typeMap = {
-        or: 'group',
-        and: 'group',
-        range: 'number',
-      }
-      , type = typeMap[key] || 'item'
-      , obj = getFilterTemplate(type);
+    var key = Object.keys(group)[0];
+    var obj = getFilterTemplate(key);
 
     switch (key) {
       case 'or':
@@ -66,62 +60,69 @@
       case 'term':
       case 'terms':
         obj.field = Object.keys(group[key])[0];
-        var fieldData = fieldMap[Object.keys(group[key])[0]];
+        var fieldData = fieldMap[obj.field];
 
-        if (fieldData.type === 'multi') {
-          var vals = group[key][obj.field];
-          if (typeof vals === 'string') vals = [ vals ];
-          obj.values = fieldData.choices.reduce(function(prev, choice) {
-            prev[choice] = group[key][obj.field].indexOf(choice) !== -1;
-            return prev;
-          }, {});
-        } else if (fieldData.type === 'date') {
-          obj.subType = truthy ? 'equals' : 'notEquals';
-          obj.date = new Date(group[key][obj.field]);
-        } else {
-          obj.subType = truthy ? 'equals' : 'notEquals';
-          obj.value = group[key][obj.field];
-
-          if (typeof obj.value === 'number') {
-            obj.subType = 'boolean';
-          }
+        switch (fieldData.type) {
+          case 'multi':
+            var vals = group[key][obj.field];
+            if (typeof vals === 'string') vals = [ vals ];
+            obj.values = fieldData.choices.reduce(function(prev, choice) {
+              prev[choice] = group[key][obj.field].indexOf(choice) !== -1;
+              return prev;
+            }, {});
+            break;
+          case 'date':
+            obj.subType = truthy ? 'equals' : 'notEquals';
+            obj.date = new Date(group[key][obj.field]);
+            break;
+          case 'term':
+          case 'number':
+            obj.subType = truthy ? 'equals' : 'notEquals';
+            obj.value = group[key][obj.field];
+            break;
+          case 'boolean':
+            obj.value = group[key][obj.field];
+            break;
+          default:
+            throw new Error('unexpected type ' + fieldData.type);
         }
         break;
       case 'range':
-        var date, parts;
         obj.field = Object.keys(group[key])[0];
-        obj.subType = Object.keys(group[key][obj.field])[0];
+        var fieldData = fieldMap[obj.field];
 
-        if (angular.isNumber(group[key][obj.field][obj.subType])) {
-          obj.value = group[key][obj.field][obj.subType];
-          break;
-        }
+        switch (fieldData.type) {
+          case 'date':
+            var date;
+            obj.field = Object.keys(group[key])[0];
 
-        if (angular.isDefined(Object.keys(group[key][obj.field])[1])) {
-          date = group[key][obj.field].gte;
+            if (Object.keys(group[key][obj.field]).length === 2) {
+              date = group[key][obj.field].gte;
 
-          if (~date.indexOf('now-')) {
-            obj.subType = 'last';
-            obj.value = parseInt(date.split('now-')[1].split('d')[0]);
+              if (~date.indexOf('now-')) {
+                obj.subType = 'last';
+                obj.value = parseInt(date.split('now-')[1].split('d')[0]);
+                break;
+              }
+
+              if (~date.indexOf('now')) {
+                obj.subType = 'next';
+                date = group[key][obj.field].lte;
+                obj.value = parseInt(date.split('now+')[1].split('d')[0]);
+                break;
+              }
+            }
+            else {
+              obj.subType = Object.keys(group[key][obj.field])[0];
+              obj.date = group[key][obj.field][obj.subType];
+            }
             break;
-          }
-
-          if (~date.indexOf('now')) {
-            obj.subType = 'next';
-            date = group[key][obj.field].lte;
-            obj.value = parseInt(date.split('now+')[1].split('d')[0]);
+          case 'number':
+            obj.field = Object.keys(group[key])[0];
+            obj.subType = Object.keys(group[key][obj.field])[0];
+            obj.value = group[key][obj.field][obj.subType];
             break;
-          }
-
-          obj.subType = 'equals';
-          parts = date.split('T')[0].split('-');
-          obj.date = parts[2] + '/' + parts[1] + '/' + parts[0];
-          break;
         }
-
-        date = group[key][obj.field][obj.subType];
-        parts = date.split('T')[0].split('-');
-        obj.date = parts[2] + '/' + parts[1] + '/' + parts[0];
         break;
 
       case 'not':
@@ -152,12 +153,10 @@
 
     switch (fieldData.type) {
       case 'term':
-        if (fieldData.subType === 'boolean') group.subType = 'boolean';
-
         if (!group.subType) return;
+
         switch (group.subType) {
           case 'equals':
-          case 'boolean':
             if (group.value === undefined) return;
             obj.term = {};
             obj.term[fieldName] = group.value;
@@ -178,10 +177,44 @@
         }
         break;
 
+      case 'boolean':
+        if (group.value === undefined) return;
+        obj.term = {};
+        obj.term[fieldName] = group.value;
+        break;
+
       case 'number':
-        obj.range = {};
-        obj.range[fieldName] = {};
-        obj.range[fieldName][group.subType] = group.value;
+        if (!group.subType) return;
+
+        switch (group.subType) {
+          case 'equals':
+            if (group.value === undefined) return;
+            obj.term = {};
+            obj.term[fieldName] = group.value;
+            break;
+          case 'notEquals':
+            if (group.value === undefined) return;
+            obj.not = { filter: { term: {}}};
+            obj.not.filter.term[fieldName] = group.value;
+            break;
+          case 'lt':
+          case 'lte':
+          case 'gt':
+          case 'gte':
+            if (group.value === undefined) return;
+            obj.range = {};
+            obj.range[fieldName] = {};
+            obj.range[fieldName][group.subType] = group.value;
+            break;
+          case 'exists':
+            obj.exists = { field: fieldName };
+            break;
+          case 'notExists':
+            obj.missing = { field: fieldName };
+            break;
+          default:
+            throw new Error('unexpected subtype ' + group.subType);
+        }
         break;
 
       case 'date':
@@ -191,21 +224,21 @@
           case 'equals':
             if (!angular.isDate(group.date)) return;
             obj.term = {};
-            obj.term[fieldName] = formatDate($filter, group.date, group.dateFormat);
+            obj.term[fieldName] = formatDate($filter, group.date);
+            break;
+          case 'notEquals':
+            if (!angular.isDate(group.date)) return;
+            obj.not = { filter: { term: {}}};
+            obj.not.filter.term[fieldName] = formatDate($filter, group.date);
             break;
           case 'lt':
           case 'lte':
-            if (!angular.isDate(group.date)) return;
-            obj.range = {};
-            obj.range[fieldName] = {};
-            obj.range[fieldName][group.subType] = formatDate($filter, group.date, group.dateFormat);
-            break;
           case 'gt':
           case 'gte':
             if (!angular.isDate(group.date)) return;
             obj.range = {};
             obj.range[fieldName] = {};
-            obj.range[fieldName][group.subType] = formatDate($filter, group.date, group.dateFormat);
+            obj.range[fieldName][group.subType] = formatDate($filter, group.date);
             break;
           case 'last':
             if (!angular.isNumber(group.value)) return;
@@ -242,13 +275,18 @@
         break;
 
       default:
-        throw new Error('unexpected type');
+        throw new Error('unexpected type ' + fieldData.type);
     }
 
     return obj;
   }
 
-  function getFilterTemplate(type) {
+  function getFilterTemplate(key) {
+    var typeMap = {
+      or: 'group',
+      and: 'group',
+    };
+    var type = typeMap[key] || 'item';
     var templates = {
       group: {
         type: 'group',
@@ -260,18 +298,14 @@
         subType: '',
         value: '',
       },
-      number: {
-        field: '',
-        subType: '',
-        value: null,
-      },
     };
 
     return angular.copy(templates[type]);
   }
 
-  function formatDate($filter, date, dateFormat) {
+  function formatDate($filter, date) {
     if (!angular.isDate(date)) return false;
+    var dateFormat = 'yyyy-MM-ddTHH:mm:ssZ';
     var fDate = $filter('date')(date, dateFormat);
     return fDate;
   }

@@ -11,7 +11,8 @@
 
   angular.module('angular-elastic-builder', [
     'RecursionHelper',
-    'ui.bootstrap.datetimepicker'
+    'ui.bootstrap.datetimepicker',
+    'ui.dateTimeInput'
   ]);
 
 })(window.angular);

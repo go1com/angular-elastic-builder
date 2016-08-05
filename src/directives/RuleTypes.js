@@ -28,8 +28,6 @@
             var type = scope.type;
             if (!type) return;
 
-            type = type.charAt(0).toUpperCase() + type.slice(1);
-
             return 'angular-elastic-builder/types/' + type + '.html';
           };
 
@@ -60,20 +58,9 @@
             return ~needs.indexOf(scope.rule.subType);
           };
 
-          scope.today = function() {
-            scope.rule.date = new Date();
-          };
           if (!scope.rule.date) {
-            scope.today();
+            scope.rule.date = new Date();
           }
-
-          scope.open1 = function() {
-            scope.popup1.opened = true;
-          };
-
-          scope.rule.dateFormat = 'yyyy-MM-ddTHH:mm:ssZ';
-
-          scope.popup1 = { opened: false };
         },
 
       };

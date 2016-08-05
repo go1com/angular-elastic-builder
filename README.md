@@ -63,12 +63,12 @@ $scope.elasticBuilderData.query = [];
  * of data they are
  */
 $scope.elasticBuilderData.fields = {
- 'test.number': { type: 'number', minimum: 650 },
- 'test.term': { type: 'term' },
- 'test.boolean': { type: 'term', subType: 'boolean' },
- 'test.state.multi': { type: 'multi', choices: [ 'AZ', 'CA', 'CT' ]},
- 'test.date': { type: 'date' },
- 'test.otherdate': { type: 'date' }
+ 'test.number': { title: 'Test Number', type: 'number', minimum: 650 },
+ 'test.term': { title: 'Test Term', type: 'term' },
+ 'test.boolean': { title: 'Test Boolean', type: 'boolean' },
+ 'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ 'AZ', 'CA', 'CT' ]},
+ 'test.date': { title: 'Test Date', type: 'date' },
+ 'test.otherdate': { title: 'Test Other Date', type: 'date' }
 };
 ```
 

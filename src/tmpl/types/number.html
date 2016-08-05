@@ -1,7 +1,10 @@
 <span class="number-rule">
   <select data-ng-model="rule.subType" class="form-control">
-    <optgroup label="Numeral">
-      <option value="equals">=</option>
+    <optgroup label="Exact">
+      <option value="equals">Equals</option>
+      <option value="notEquals">Not Equals</option>
+    </optgroup>
+    <optgroup label="Range">
       <option value="gt">&gt;</option>
       <option value="gte">&ge;</option>
       <option value="lt">&lt;</option>
@@ -10,7 +13,7 @@
 
     <optgroup label="Generic">
       <option value="exists">Exists</option>
-      <option value="notExists">! Exists</option>
+      <option value="notExists">Not Exists</option>
     </optgroup>
   </select>
 
