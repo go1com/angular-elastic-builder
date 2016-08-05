@@ -63,6 +63,11 @@
             'lte': 'now+7d'
           }
         }
+      },
+      {
+        'match': {
+          'test.match': 'brown dog'
+        }
       }
     ];
 
@@ -72,7 +77,8 @@
      'test.boolean': { title: 'Test Boolean', type: 'boolean' },
      'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ 'AZ', 'CA', 'CT' ]},
      'test.date': { title: 'Test Date', type: 'date' },
-     'test.otherdate': { title: 'Test Other Date', type: 'date' }
+     'test.otherdate': { title: 'Test Other Date', type: 'date' },
+     'test.match': { title: 'Test Match', type: 'match' }
     };
 
     data.needsUpdate = true;

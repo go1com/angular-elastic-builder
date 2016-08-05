@@ -124,6 +124,26 @@
             break;
         }
         break;
+      case 'match':
+        obj.field = Object.keys(group[key])[0];
+        if (typeof group[key][obj.field] === 'string') {
+          obj.subType = 'matchAny';
+          obj.value = group[key][obj.field];
+        }
+        else if ('operator' in group[key][obj.field]) {
+          obj.subType = group[key][obj.field].operator === 'and' ? 'matchAll' : 'matchAny';
+          obj.value = group[key][obj.field].query;
+        }
+        else if ('type' in group[key][obj.field] && group[key][obj.field].type === 'phrase') {
+          obj.subType = 'matchPhrase';
+          obj.value = group[key][obj.field].query;
+        }
+        break;
+      case 'match_phrase':
+        obj.field = Object.keys(group[key])[0];
+        obj.subType = 'matchPhrase';
+        obj.value = group[key][obj.field];
+        break;
 
       case 'not':
         obj = parseQueryGroup(fieldMap, group[key].filter, false);
@@ -272,6 +292,32 @@
 
           return prev;
         }, []);
+        break;
+
+      case 'match':
+        if (!group.subType) return;
+
+        switch (group.subType) {
+          case 'matchAny':
+            if (group.value === undefined) return;
+            obj.match = {};
+            obj.match[fieldName] = group.value;
+            break;
+          case 'matchAll':
+            if (group.value === undefined) return;
+            obj.match = {};
+            obj.match[fieldName] = {};
+            obj.match[fieldName].query = group.value;
+            obj.match[fieldName].operator = 'and';
+            break;
+          case 'matchPhrase':
+            if (group.value === undefined) return;
+            obj.match_phrase = {};
+            obj.match_phrase[fieldName] = group.value;
+            break;
+          default:
+            throw new Error('unexpected subtype ' + group.subType);
+        }
         break;
 
       default:
