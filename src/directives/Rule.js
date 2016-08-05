@@ -30,6 +30,12 @@
 
             return fields[field].type;
           };
+          scope.resetRule = function(rule) {
+            delete rule.subType;
+            delete rule.value;
+            delete rule.date;
+            delete rule.values;
+          };
         },
       };
     },
