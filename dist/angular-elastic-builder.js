@@ -440,11 +440,11 @@
             break;
           case 'term':
           case 'number':
-          case 'select':
             obj.subType = truthy ? 'equals' : 'notEquals';
             obj.value = group[key][obj.field];
             break;
           case 'boolean':
+          case 'select':
             obj.value = group[key][obj.field];
             break;
           default:
@@ -537,7 +537,6 @@
 
     switch (fieldData.type) {
       case 'term':
-      case 'select':
         if (!group.subType) return;
 
         switch (group.subType) {
@@ -657,6 +656,12 @@
 
           return prev;
         }, []);
+        break;
+
+      case 'select':
+        if (group.value === undefined) return;
+        obj.term = {};
+        obj.term[fieldName] = group.value;
         break;
 
       case 'match':
