@@ -68,6 +68,11 @@
         'match': {
           'test.match': 'brown dog'
         }
+      },
+      {
+        'term': {
+          'test.select': 'Working'
+        }
       }
     ];
 
@@ -78,7 +83,8 @@
      'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ 'AZ', 'CA', 'CT' ]},
      'test.date': { title: 'Test Date', type: 'date' },
      'test.otherdate': { title: 'Test Other Date', type: 'date' },
-     'test.match': { title: 'Test Match', type: 'match' }
+     'test.match': { title: 'Test Match', type: 'match' },
+     'test.select': { title: 'Test Select', type: 'select', choices: [ 'Active', 'Pending', 'Working', 'Finished' ] }
     };
 
     data.needsUpdate = true;

@@ -77,6 +77,7 @@
             break;
           case 'term':
           case 'number':
+          case 'select':
             obj.subType = truthy ? 'equals' : 'notEquals';
             obj.value = group[key][obj.field];
             break;
@@ -173,6 +174,7 @@
 
     switch (fieldData.type) {
       case 'term':
+      case 'select':
         if (!group.subType) return;
 
         switch (group.subType) {
