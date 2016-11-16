@@ -1,0 +1,126 @@
+/**
+ * # angular-elastic-builder
+ * ## Angular Module for building an Elasticsearch Query
+ *
+ * @version v1.7.0
+ * @link https://github.com/dncrews/angular-elastic-builder.git
+ * @license MIT
+ * @author Dan Crews <crewsd@gmail.com>
+ */
+
+.elastic-builder-rule {
+    display: inline-block;
+    position: relative;
+    white-space: nowrap;
+}
+.elastic-builder-rule:before {
+    content: '';
+    height: 1px;
+    background: #ccc;
+    width: 100%;
+    display: block;
+    position: absolute;
+    top: 50%;
+}
+
+.rule--text,
+.elastic-builder-rule select,
+.elastic-builder-rule input,
+.elastic-builder-rule .elastic-builder--select,
+.elastic-builder-rule > .btn {
+    position: relative;
+    margin: 0 5px;
+}
+.elastic-builder-rule > *:first-child {
+    margin-left: 20px;
+}
+.elastic-builder-rule > *:last-child {
+    margin-right: 0;
+}
+.rule--text {
+    background: #fff;
+    padding: 5px 5px;
+}
+.elastic-builder--select {
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.elastic-builder--select:before {
+    content: "";
+    border-left: 5px solid #fff;
+    border-right: 5px solid #fff;
+    border-top: 5px solid #000;
+    right: 3px;
+    position: absolute;
+    top: 15px;
+}
+
+.elastic-builder--select select {
+    padding: 5px 8px;
+    width: 130%;
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.elastic-filter {
+    border-left: 1px solid #ccc;
+    position: relative;
+}
+.elastic-filter-item {
+    margin: 20px 0;
+}
+.elastic-filter-item:first-child .elastic-builder-rule:after,
+.elastic-filter-item:last-child .elastic-builder-rule:after {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 50%;
+    background: #fff;
+    left: -1px;
+    top: 0;
+}
+
+.elastic-filter-item:last-child .elastic-builder-rule:after {
+    top: auto;
+    bottom: 0;
+}
+
+.elastic-filter-item:only-child .elastic-builder-rule:before {
+    display: none;
+}
+.elastic-filter-item:only-child .elastic-builder-rule:after {
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    border-color: #fff;
+}
+.elastic-filter-item-actions {
+    border-left: 0;
+}
+
+.elastic-builder-rule-group {
+    display: block;
+}
+.elastic-builder-chooser {
+    white-space: nowrap;
+}
+.elastic-builder-chooser > div > div > div > .elastic-builder-chooser {
+    margin: 10px 0;
+}
+.elastic-builder-group {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    background: #fff;
+    position: relative;
+}

@@ -1,9 +1,11 @@
 <span class="select-rule">
-  Equals
+  <span class="rule--text">Equals</span>
 
-  <select
-    data-ng-model="rule.value"
-    class="form-control"
-    data-ng-options="choice for choice in guide.choices">
-  </select>
+  <span class="elastic-builder--select">
+    <select
+      data-ng-model="rule.value"
+      class="form-control"
+      data-ng-options="choice for choice in guide.choices">
+    </select>
+  </span>
 </span>

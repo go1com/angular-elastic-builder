@@ -1,4 +1,4 @@
-<span class="elastic-term">
+<span class="elastic-builder--select elastic-term">
   <select data-ng-model="rule.subType" class="form-control">
     <!-- Term Options -->
     <optgroup label="Exact">
@@ -11,11 +11,11 @@
       <option value="exists">Exists</option>
       <option value="notExists">Not Exists</option>
     </optgroup>
-
   </select>
-  <input
-    data-ng-if="inputNeeded()"
-    class="form-control"
-    data-ng-model="rule.value"
-    type="text">
 </span>
+
+<input
+  data-ng-if="inputNeeded()"
+  class="form-control"
+  data-ng-model="rule.value"
+  type="text">

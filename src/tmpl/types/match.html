@@ -1,11 +1,14 @@
 <span class="elastic-term">
-  <select data-ng-model="rule.subType" class="form-control">
-    <!-- Term Options -->
-    <option value="matchAll">Match All</option>
-    <option value="matchAny">Match Any</option>
-    <option value="matchPhrase">Match Phrase</option>
+  <span class="elastic-builder--select">
+    <select data-ng-model="rule.subType" class="form-control">
+      <!-- Term Options -->
+      <option value="matchAll">Match All</option>
+      <option value="matchAny">Match Any</option>
+      <option value="matchPhrase">Match Phrase</option>
 
-  </select>
+    </select>
+  </span>
+
   <input
     class="form-control"
     data-ng-model="rule.value"

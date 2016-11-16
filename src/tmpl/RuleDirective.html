@@ -1,10 +1,12 @@
 <div class="elastic-builder-rule">
-  <select class="form-control" data-ng-model="rule.field" data-ng-options="key as value.title for (key, value) in elasticFields" ng-change="resetRule(rule)"></select>
+  <span class="elastic-builder--select">
+    <select class="form-control" data-ng-model="rule.field" data-ng-options="key as value.title for (key, value) in elasticFields" ng-change="resetRule(rule)"></select>
+  </span>
 
   <span data-elastic-type="getType()" data-rule="rule" data-guide="elasticFields[rule.field]"></span>
 
-  <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()">
-    <i class="fa fa-minus"></i>
+  <a class="btn btn-default remover" data-ng-click="onRemove()">
+    <i class="fa fa-times"></i>
   </a>
 
 </div>
