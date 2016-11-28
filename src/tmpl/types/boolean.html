@@ -1,12 +1,10 @@
 <span class="boolean-rule">
-  <span class="rule--text">Equals</span>
+  <span class="rule-text">Equals</span>
 
   <!-- This is a weird hack to make sure these are numbers -->
-  <span class="elastic-builder--select">
-    <select
-      data-ng-model="rule.value"
-      class="form-control"
-      data-ng-options="booleans.indexOf(choice) as choice for choice in booleansOrder">
-    </select>
-  </span>
+  <select
+    data-ng-model="rule.value"
+    class="form-control"
+    data-ng-options="booleans.indexOf(choice) as choice for choice in booleansOrder">
+  </select>
 </span>

@@ -1,7 +1,5 @@
 <div class="elastic-builder-rule">
-  <span class="elastic-builder--select">
-    <select class="form-control" data-ng-model="rule.field" data-ng-options="key as value.title for (key, value) in elasticFields" ng-change="resetRule(rule)"></select>
-  </span>
+  <select class="form-control" data-ng-model="rule.field" data-ng-options="key as value.title for (key, value) in elasticFields" ng-change="resetRule(rule)"></select>
 
   <span data-elastic-type="getType()" data-rule="rule" data-guide="elasticFields[rule.field]"></span>
 

@@ -11,7 +11,6 @@
 
   app.directive('elasticBuilderGroup', [
     'RecursionHelper',
-    'groupClassHelper',
 
     function elasticBuilderGroup(RH) {
 

@@ -29,5 +29,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "gulp": "gulp"
   },
-  "dependencies": {}
+  "dependencies": {
+    "gulp-uglifycss": "^1.0.6"
+  }
 }

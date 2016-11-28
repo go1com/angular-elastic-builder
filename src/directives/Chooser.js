@@ -13,9 +13,8 @@
 
   app.directive('elasticBuilderChooser', [
     'RecursionHelper',
-    'groupClassHelper',
 
-    function elasticBuilderChooser(RH, groupClassHelper) {
+    function elasticBuilderChooser(RH) {
 
       return {
         scope: {
@@ -27,8 +26,7 @@
         templateUrl: 'angular-elastic-builder/ChooserDirective.html',
 
         compile: function (element) {
-          return RH.compile(element, function(scope, el, attrs) {
-           });
+          return RH.compile(element);
         },
       };
     },

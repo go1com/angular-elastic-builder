@@ -7,7 +7,8 @@ var concat = require('gulp-concat')
   , gulp = require('gulp')
   , templateCache = require('gulp-angular-templatecache')
   , rename = require('gulp-rename')
-  , uglify = require('gulp-uglifyjs')
+  , uglifyjs = require('gulp-uglifyjs')
+  , uglifycss = require('gulp-uglifycss')
   , util = require('util')
   , eslint = require('gulp-eslint');
 
@@ -27,23 +28,23 @@ var banner = ['/**'
   , ''
   , ''].join('\n');
 
-gulp.task('build', ['uglify']);
-gulp.task('default', ['uglify']);
+gulp.task('build', ['uglifyjs', 'uglifycss']);
+gulp.task('default', ['build']);
 
 
-gulp.task('clean', function(cb) {
-  del(['./dist'], cb);
+gulp.task('clean', function(done) {
+  del(['./dist'], done);
 });
 
 
-gulp.task('concatjs', [ 'templatecache' ], function() {
+gulp.task('concatjs', [ 'clean', 'templatecache' ], function() {
   return gulp.src(['./src/module.js', './src/**/*.js'])
     .pipe(concat(util.format('%s.js', pkg.name)))
     .pipe(gulp.dest('./dist'));
 });
 
 
-gulp.task('concatcss', function() {
+gulp.task('concatcss', [ 'clean' ], function() {
   return gulp.src('./src/styles/main.css')
     .pipe(concat(util.format('%s.css', pkg.name)))
     .pipe(gulp.dest('./dist'));
@@ -55,9 +56,16 @@ gulp.task('header', [ 'concatjs', 'concatcss'], function() {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('uglify', [ 'header' ], function() {
+gulp.task('uglifyjs', [ 'header' ], function() {
   return gulp.src('./dist/*.js')
-    .pipe(uglify())
+    .pipe(uglifyjs())
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('uglifycss', [ 'header' ], function() {
+  return gulp.src('./dist/*.css')
+    .pipe(uglifycss())
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest('./dist'));
 });

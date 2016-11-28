@@ -1,6 +1,6 @@
 <div class="elastic-builder">
-  <div class="filter-panels">
-    <div class="elastic-filter form-inline">
+  <div class="form-inline">
+    <div class="elastic-filter">
       <div
         class="elastic-filter-item"
         data-ng-repeat="filter in filters"
@@ -8,15 +8,17 @@
         data-elastic-fields="data.fields"
         data-on-remove="removeChild($index)"
         data-depth="0"></div>
-      <div class="elastic-filter-item elastic-filter-item-actions">
-        <div class="elastic-builder-rule">
-          <a class="btn btn-default" title="Add Rule" data-ng-click="addRule()">
-            <i class="fa fa-plus"></i>
-          </a>
-          <a class="btn btn-default" title="Add Group" data-ng-click="addGroup()">
-            <i class="fa fa-list"></i>
-          </a>
-        </div>
+      <div class="elastic-filter-item">
+        <div class="elastic-builder-rule-wrapper">
+          <div class="elastic-builder-rule">
+            <a class="btn btn-default" title="Add Rule" data-ng-click="addRule()">
+              <i class="fa fa-plus"></i>
+            </a>
+            <a class="btn btn-default" title="Add Group" data-ng-click="addGroup()">
+              <i class="fa fa-list"></i>
+            </a>
+          </div>
+        <div>
       </div>
     </div>
   </div>
