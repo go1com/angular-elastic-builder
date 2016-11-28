@@ -22,14 +22,13 @@
     "gulp-eslint": "^2.0.0",
     "gulp-header": "^1.2.2",
     "gulp-rename": "^1.2.2",
-    "gulp-uglifyjs": "^0.6.1"
+    "gulp-uglifyjs": "^0.6.1",
+    "gulp-uglifycss": "^1.0.6"
   },
   "scripts": {
     "example": "node examples",
     "test": "echo \"Error: no test specified\" && exit 1",
     "gulp": "gulp"
   },
-  "dependencies": {
-    "gulp-uglifycss": "^1.0.6"
-  }
+  "dependencies": {}
 }
