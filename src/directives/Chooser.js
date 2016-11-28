@@ -13,9 +13,8 @@
 
   app.directive('elasticBuilderChooser', [
     'RecursionHelper',
-    'groupClassHelper',
 
-    function elasticBuilderChooser(RH, groupClassHelper) {
+    function elasticBuilderChooser(RH) {
 
       return {
         scope: {
@@ -27,17 +26,7 @@
         templateUrl: 'angular-elastic-builder/ChooserDirective.html',
 
         compile: function (element) {
-          return RH.compile(element, function(scope, el, attrs) {
-            var depth = scope.depth = (+attrs.depth)
-              , item = scope.item;
-
-            scope.getGroupClassName = function() {
-              var level = depth;
-              if (item.type === 'group') level++;
-
-              return groupClassHelper(level);
-            };
-          });
+          return RH.compile(element);
         },
       };
     },

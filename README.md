@@ -11,7 +11,7 @@ You just give it the fields and can generate a query for it. Its layout is defin
 It's still pretty early on, as it doesn't support a whole lot of use-cases, but we need to make it awesome. Contributions accepted.
 
 ## Try it Out
-[View an example here](http://dncrews.com/angular-elastic-builder/examples/)
+[View an (old) example here](http://dncrews.com/angular-elastic-builder/examples/)
 
 ## Usage
 
@@ -30,6 +30,7 @@ Includes js and css files into your app.
 <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="bower_components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css">
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="bower_components/angular-elastic-builder-tienvx/angular-elastic-builder.css">
 <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="bower_components/moment/moment.js"></script>
@@ -37,7 +38,8 @@ Includes js and css files into your app.
 <script type="text/javascript" src="bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
 <script type="text/javascript" src="bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js"></script>
 <script type="text/javascript" src="bower_components/angular-recursion/angular-recursion.min.js"></script>
-<script type="text/javascript" src="bower_components/angular-elastic-builder/dist/angular-elastic-builder.js"></script>
+<script type="text/javascript" src="bower_components/angular-date-time-input/src/dateTimeInput.js"></script>
+<script type="text/javascript" src="bower_components/angular-elastic-builder-tienvx/angular-elastic-builder.js"></script>
 ```
 
 Then make sure that it's included in your app's dependencies during module creation.
@@ -55,7 +57,73 @@ Then you can use it in your app
  * your own $watch, and/or your own saving mechanism
  */
 $scope.elasticBuilderData = {};
-$scope.elasticBuilderData.query = [];
+$scope.elasticBuilderData.query = [
+  {
+    'and': [
+      {
+        'term': {
+          'test.date': '2016-04-08T09:16:48'
+        }
+      },
+      {
+        'range': {
+          'test.number': {
+            'gte': 650
+          }
+        }
+      },
+      {
+        'range': {
+          'test.number': {
+            'lt': 850
+          }
+        }
+      }
+    ]
+  },
+  {
+    'term': {
+      'test.boolean': 0
+    }
+  },
+  {
+    'terms': {
+      'test.state.multi': [ 'AZ', 'CT' ]
+    }
+  },
+  {
+    'not': {
+      'filter': {
+        'term': {
+          'test.term': 'asdfasdf'
+        }
+      }
+    }
+  },
+  {
+    'exists': {
+      'field': 'test.term'
+    }
+  },
+  {
+    'range': {
+      'test.otherdate': {
+        'gte': 'now',
+        'lte': 'now+7d'
+      }
+    }
+  },
+  {
+    'match': {
+      'test.match': 'brown dog'
+    }
+  },
+  {
+    'term': {
+      'test.select': 'Working'
+    }
+  }
+];
 
 /**
  * This object is the lookup for what fields
@@ -69,7 +137,8 @@ $scope.elasticBuilderData.fields = {
  'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ 'AZ', 'CA', 'CT' ]},
  'test.date': { title: 'Test Date', type: 'date' },
  'test.otherdate': { title: 'Test Other Date', type: 'date' },
- 'test.match': { title: 'Test Match', type: 'match' }
+ 'test.match': { title: 'Test Match', type: 'match' },
+ 'test.select': { title: 'Test Select', type: 'select', choices: [ 'Active', 'Pending', 'Working', 'Finished' ] }
 };
 ```
 
@@ -82,63 +151,81 @@ The above elasticFields would allow you create the following form:
 
 Which represents the following Elasticsearch Query:
 ```json
-[
-  {
+{
+  "size": 0,
+  "filter": {
     "and": [
       {
+        "and": [
+          {
+            "term": {
+              "test.date": "2016-04-08T16:16:48+0700"
+            }
+          },
+          {
+            "range": {
+              "test.number": {
+                "gte": 650
+              }
+            }
+          },
+          {
+            "range": {
+              "test.number": {
+                "lt": 850
+              }
+            }
+          }
+        ]
+      },
+      {
         "term": {
-          "test.date": "2016-04-08T10:44:06"
+          "test.boolean": 0
         }
       },
       {
-        "range": {
-          "test.number": {
-            "gte": 650
+        "terms": {
+          "test.state.multi": [
+            "AZ",
+            "CT"
+          ]
+        }
+      },
+      {
+        "not": {
+          "filter": {
+            "term": {
+              "test.term": "asdfasdf"
+            }
           }
         }
       },
       {
+        "exists": {
+          "field": "test.term"
+        }
+      },
+      {
         "range": {
-          "test.number": {
-            "lt": 850
+          "test.otherdate": {
+            "gte": "now",
+            "lte": "now+7d"
           }
+        }
+      },
+      {
+        "match": {
+          "test.match": "brown dog"
+        }
+      },
+      {
+        "term": {
+          "test.select": "Working"
         }
       }
     ]
-  },
-  {
-    "term": {
-      "test.boolean": 0
-    }
-  },
-  {
-    "terms": {
-      "test.state.multi": [ "AZ", "CT" ]
-    }
-  },
-  {
-    "not": {
-      "filter": {
-        "term": {
-          "test.term": "asdfasdf"
-        }
-      }
-    }
-  },
-  {
-    "exists": {
-      "field": "test.term"
-    }
-  },
-  {
-    "range": {
-      "test.otherdate": {
-        "gte": "now",
-        "lte": "now+7d"
-      }
-    }
   }
-]
+}
 ```
 
 
