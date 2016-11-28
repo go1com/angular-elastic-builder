@@ -23,8 +23,6 @@
           templateUrl: 'angular-elastic-builder/BuilderDirective.html',
 
           link: function(scope) {
-            var data = scope.data;
-
             scope.filters = [];
 
             /**
@@ -59,7 +57,7 @@
             scope.$watch('data.needsUpdate', function(curr) {
               if (!curr) return;
 
-              scope.filters = elasticQueryService.toFilters(data.query, scope.data.fields);
+              scope.filters = elasticQueryService.toFilters(scope.data);
               scope.data.needsUpdate = false;
             });
 
@@ -69,7 +67,7 @@
             scope.$watch('filters', function(curr) {
               if (!curr) return;
 
-              data.query = elasticQueryService.toQuery(scope.filters, scope.data.fields);
+              scope.data.query = elasticQueryService.toQuery(scope.filters, scope.data);
             }, true);
           },
         };

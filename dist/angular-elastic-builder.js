@@ -52,8 +52,6 @@
           templateUrl: 'angular-elastic-builder/BuilderDirective.html',
 
           link: function(scope) {
-            var data = scope.data;
-
             scope.filters = [];
 
             /**
@@ -88,7 +86,7 @@
             scope.$watch('data.needsUpdate', function(curr) {
               if (!curr) return;
 
-              scope.filters = elasticQueryService.toFilters(data.query, scope.data.fields);
+              scope.filters = elasticQueryService.toFilters(scope.data);
               scope.data.needsUpdate = false;
             });
 
@@ -98,7 +96,7 @@
             scope.$watch('filters', function(curr) {
               if (!curr) return;
 
-              data.query = elasticQueryService.toQuery(scope.filters, scope.data.fields);
+              scope.data.query = elasticQueryService.toQuery(scope.filters, scope.data);
             }, true);
           },
         };
@@ -341,13 +339,20 @@
       },
     ]);
 
-  function toFilters(query, fieldMap){
+  function toFilters(data){
+    var query = data.query;
+    var fieldMap = data.fields;
     var filters = query.map(parseQueryGroup.bind(query, fieldMap));
     return filters;
   }
 
-  function toQuery(filters, fieldMap, $filter){
+  function toQuery(filters, data, $filter){
+    var fieldMap = data.fields;
+    data.count = 0;
     var query = filters.map(parseFilterGroup.bind(filters, fieldMap, $filter)).filter(function(item) {
+      if (!!item) {
+        data.count += item.count;
+      }
       return !!item;
     });
     return query;
@@ -480,6 +485,7 @@
       obj[group.subType] = group.rules.map(parseFilterGroup.bind(group, fieldMap, $filter)).filter(function(item) {
         return !!item;
       });
+      obj.count = obj[group.subType].length;
       return obj;
     }
 
@@ -648,6 +654,7 @@
         throw new Error('unexpected type ' + fieldData.type);
     }
 
+    obj.count = 1;
     return obj;
   }
 

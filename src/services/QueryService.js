@@ -24,13 +24,20 @@
       },
     ]);
 
-  function toFilters(query, fieldMap){
+  function toFilters(data){
+    var query = data.query;
+    var fieldMap = data.fields;
     var filters = query.map(parseQueryGroup.bind(query, fieldMap));
     return filters;
   }
 
-  function toQuery(filters, fieldMap, $filter){
+  function toQuery(filters, data, $filter){
+    var fieldMap = data.fields;
+    data.count = 0;
     var query = filters.map(parseFilterGroup.bind(filters, fieldMap, $filter)).filter(function(item) {
+      if (!!item) {
+        data.count += item.count;
+      }
       return !!item;
     });
     return query;
@@ -163,6 +170,7 @@
       obj[group.subType] = group.rules.map(parseFilterGroup.bind(group, fieldMap, $filter)).filter(function(item) {
         return !!item;
       });
+      obj.count = obj[group.subType].length;
       return obj;
     }
 
@@ -331,6 +339,7 @@
         throw new Error('unexpected type ' + fieldData.type);
     }
 
+    obj.count = 1;
     return obj;
   }
 
