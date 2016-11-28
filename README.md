@@ -59,69 +59,69 @@ Then you can use it in your app
 $scope.elasticBuilderData = {};
 $scope.elasticBuilderData.query = [
   {
-   'and': [
-     {
-       'term': {
-         'test.date': '2016-04-08T09:16:48'
-       }
-     },
-     {
-       'range': {
-         'test.number': {
-           'gte': 650
-         }
-       }
-     },
-     {
-       'range': {
-         'test.number': {
-           'lt': 850
-         }
-       }
-     }
-   ]
+    'and': [
+      {
+        'term': {
+          'test.date': '2016-04-08T09:16:48'
+        }
+      },
+      {
+        'range': {
+          'test.number': {
+            'gte': 650
+          }
+        }
+      },
+      {
+        'range': {
+          'test.number': {
+            'lt': 850
+          }
+        }
+      }
+    ]
   },
   {
-   'term': {
-     'test.boolean': 0
-   }
+    'term': {
+      'test.boolean': 0
+    }
   },
   {
-   'terms': {
-     'test.state.multi': [ 'AZ', 'CT' ]
-   }
+    'terms': {
+      'test.state.multi': [ 'AZ', 'CT' ]
+    }
   },
   {
-   'not': {
-     'filter': {
-       'term': {
-         'test.term': 'asdfasdf'
-       }
-     }
-   }
+    'not': {
+      'filter': {
+        'term': {
+          'test.term': 'asdfasdf'
+        }
+      }
+    }
   },
   {
-   'exists': {
-     'field': 'test.term'
-   }
+    'exists': {
+      'field': 'test.term'
+    }
   },
   {
-   'range': {
-     'test.otherdate': {
-       'gte': 'now',
-       'lte': 'now+7d'
-     }
-   }
+    'range': {
+      'test.otherdate': {
+        'gte': 'now',
+        'lte': 'now+7d'
+      }
+    }
   },
   {
-   'match': {
-     'test.match': 'brown dog'
-   }
+    'match': {
+      'test.match': 'brown dog'
+    }
   },
   {
-   'term': {
-     'test.select': 'Working'
-   }
+    'term': {
+      'test.select': 'Working'
+    }
   }
 ];
 
