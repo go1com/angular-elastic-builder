@@ -57,73 +57,7 @@ Then you can use it in your app
  * your own $watch, and/or your own saving mechanism
  */
 $scope.elasticBuilderData = {};
-$scope.elasticBuilderData.query = [
-  {
-    'and': [
-      {
-        'term': {
-          'test.date': '2016-04-08T09:16:48'
-        }
-      },
-      {
-        'range': {
-          'test.number': {
-            'gte': 650
-          }
-        }
-      },
-      {
-        'range': {
-          'test.number': {
-            'lt': 850
-          }
-        }
-      }
-    ]
-  },
-  {
-    'term': {
-      'test.boolean': 0
-    }
-  },
-  {
-    'terms': {
-      'test.state.multi': [ 'AZ', 'CT' ]
-    }
-  },
-  {
-    'not': {
-      'filter': {
-        'term': {
-          'test.term': 'asdfasdf'
-        }
-      }
-    }
-  },
-  {
-    'exists': {
-      'field': 'test.term'
-    }
-  },
-  {
-    'range': {
-      'test.otherdate': {
-        'gte': 'now',
-        'lte': 'now+7d'
-      }
-    }
-  },
-  {
-    'match': {
-      'test.match': 'brown dog'
-    }
-  },
-  {
-    'term': {
-      'test.select': 'Working'
-    }
-  }
-];
+$scope.elasticBuilderData.query = [];
 
 /**
  * This object is the lookup for what fields
@@ -151,81 +85,76 @@ The above elasticFields would allow you create the following form:
 
 Which represents the following Elasticsearch Query:
 ```json
-{
-  "size": 0,
-  "filter": {
+[
+  {
     "and": [
       {
-        "and": [
-          {
-            "term": {
-              "test.date": "2016-04-08T16:16:48+0700"
-            }
-          },
-          {
-            "range": {
-              "test.number": {
-                "gte": 650
-              }
-            }
-          },
-          {
-            "range": {
-              "test.number": {
-                "lt": 850
-              }
-            }
-          }
-        ]
-      },
-      {
         "term": {
-          "test.boolean": 0
-        }
-      },
-      {
-        "terms": {
-          "test.state.multi": [
-            "AZ",
-            "CT"
-          ]
-        }
-      },
-      {
-        "not": {
-          "filter": {
-            "term": {
-              "test.term": "asdfasdf"
-            }
-          }
-        }
-      },
-      {
-        "exists": {
-          "field": "test.term"
+          "test.date": "2016-04-08T16:16:48+0700"
         }
       },
       {
         "range": {
-          "test.otherdate": {
-            "gte": "now",
-            "lte": "now+7d"
+          "test.number": {
+            "gte": 650
           }
         }
       },
       {
-        "match": {
-          "test.match": "brown dog"
-        }
-      },
-      {
-        "term": {
-          "test.select": "Working"
+        "range": {
+          "test.number": {
+            "lt": 850
+          }
         }
       }
     ]
+  },
+  {
+    "term": {
+      "test.boolean": 0
+    }
+  },
+  {
+    "terms": {
+      "test.state.multi": [
+        "AZ",
+        "CT"
+      ]
+    }
+  },
+  {
+    "not": {
+      "filter": {
+        "term": {
+          "test.term": "asdfasdf"
+        }
+      }
+    }
+  },
+  {
+    "exists": {
+      "field": "test.term"
+    }
+  },
+  {
+    "range": {
+      "test.otherdate": {
+        "gte": "now",
+        "lte": "now+7d"
+      }
+    }
+  },
+  {
+    "match": {
+      "test.match": "brown dog"
+    }
+  },
+  {
+    "term": {
+      "test.select": "Working"
+    }
   }
-}
+]
 ```
 
 
