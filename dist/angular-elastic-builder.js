@@ -324,6 +324,8 @@
 (function(angular) {
   'use strict';
 
+  var count;
+
   angular.module('angular-elastic-builder')
     .factory('elasticQueryService', [
       '$filter',
@@ -348,13 +350,11 @@
 
   function toQuery(filters, data, $filter){
     var fieldMap = data.fields;
-    data.count = 0;
+    count = 0;
     var query = filters.map(parseFilterGroup.bind(filters, fieldMap, $filter)).filter(function(item) {
-      if (!!item) {
-        data.count += item.count;
-      }
       return !!item;
     });
+    data.count = count;
     return query;
   }
 
@@ -485,7 +485,6 @@
       obj[group.subType] = group.rules.map(parseFilterGroup.bind(group, fieldMap, $filter)).filter(function(item) {
         return !!item;
       });
-      obj.count = obj[group.subType].length;
       return obj;
     }
 
@@ -654,7 +653,7 @@
         throw new Error('unexpected type ' + fieldData.type);
     }
 
-    obj.count = 1;
+    count += 1;
     return obj;
   }
 

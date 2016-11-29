@@ -38,7 +38,7 @@ gulp.task('clean', function(done) {
 
 
 gulp.task('concatjs', [ 'clean', 'templatecache' ], function() {
-  return gulp.src(['./src/module.js', './src/**/*.js'])
+  return gulp.src(['./src/module.js', './src/directives/*.js', './src/services/*.js', './src/tmpl/ElasticBuilderTemplates.js'])
     .pipe(concat(util.format('%s.js', pkg.name)))
     .pipe(gulp.dest('./dist'));
 });
