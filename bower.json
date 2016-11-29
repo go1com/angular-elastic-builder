@@ -5,7 +5,10 @@
     "Dan Crews <crewsd@gmail.com>"
   ],
   "description": "Angular Module for building an Elasticsearch Query",
-  "main": "dist/angular-elastic-builder.js",
+  "main": [
+    "dist/angular-elastic-builder.js",
+    "dist/angular-elastic-builder.css"
+  ],
   "keywords": [
     "elasticsearch",
     "angular"
