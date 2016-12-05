@@ -14,6 +14,9 @@
   background: #fff;
   position: relative;
 }
+.elastic-builder-rule-group {
+  display: block;
+}
 .elastic-filter {
   border-left: 1px solid #ccc;
   position: relative;
