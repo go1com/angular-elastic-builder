@@ -4,7 +4,7 @@
   background: #fff;
   position: relative;
 }
-.elastic-builder-rule-group {
+.elastic-builder-rule.elastic-builder-rule-group {
   display: block;
 }
 .elastic-filter {
