@@ -2,7 +2,7 @@
  * # angular-elastic-builder
  * ## Angular Module for building an Elasticsearch Query
  *
- * @version v1.7.0
+ * @version v1.11.0
  * @link https://github.com/dncrews/angular-elastic-builder.git
  * @license MIT
  * @author Dan Crews <crewsd@gmail.com>
@@ -471,6 +471,10 @@
       case 'not':
         obj = parseQueryGroup(fieldMap, group[key].filter, false);
         break;
+
+      case 'nested':
+        obj = parseQueryGroup(fieldMap, group[key].filter);
+        break;
       default:
         obj.field = Object.keys(group[key])[0];
         break;
@@ -651,6 +655,15 @@
 
       default:
         throw new Error('unexpected type ' + fieldData.type);
+    }
+
+    if (fieldData.nested) {
+      obj = {
+        nested: {
+          path: fieldData.path,
+          filter: obj
+        }
+      };
     }
 
     count += 1;

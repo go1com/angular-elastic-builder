@@ -72,7 +72,8 @@ $scope.elasticBuilderData.fields = {
  'test.date': { title: 'Test Date', type: 'date' },
  'test.otherdate': { title: 'Test Other Date', type: 'date' },
  'test.match': { title: 'Test Match', type: 'match' },
- 'test.select': { title: 'Test Select', type: 'select', choices: [ 'Active', 'Pending', 'Working', 'Finished' ] }
+ 'test.select': { title: 'Test Select', type: 'select', choices: [ 'Active', 'Pending', 'Working', 'Finished' ] },
+ 'test.nested.term': { title: 'Test Term', type: 'term', 'nested': true, 'path': 'test.nested' }
 };
 ```
 
@@ -152,6 +153,16 @@ Which represents the following Elasticsearch Query:
   {
     "term": {
       "test.select": "Working"
+    }
+  },
+  {
+    "nested": {
+      "path": "test.nested",
+      "filter": {
+        "term": {
+          "test.nested.term": "sample text"
+        }
+      }
     }
   }
 ]

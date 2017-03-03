@@ -156,6 +156,10 @@
       case 'not':
         obj = parseQueryGroup(fieldMap, group[key].filter, false);
         break;
+
+      case 'nested':
+        obj = parseQueryGroup(fieldMap, group[key].filter);
+        break;
       default:
         obj.field = Object.keys(group[key])[0];
         break;
@@ -336,6 +340,15 @@
 
       default:
         throw new Error('unexpected type ' + fieldData.type);
+    }
+
+    if (fieldData.nested) {
+      obj = {
+        nested: {
+          path: fieldData.path,
+          filter: obj
+        }
+      };
     }
 
     count += 1;
