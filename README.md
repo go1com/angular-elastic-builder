@@ -124,15 +124,15 @@ Which represents the following Elasticsearch Query:
     }
   },
   {
-    'match_phrase': {
-      'test.person.name.contains': 'My First Name'
+    "match_phrase": {
+      "test.person.name.contains": "My First Name"
     }
   },
   {
-    'bool': {
-      'must_not': {
-        'term': {
-          'test.term': 'Not me'
+    "bool": {
+      "must_not": {
+        "term": {
+          "test.term": "Not me"
         }
       }
     }
