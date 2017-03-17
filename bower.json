@@ -27,6 +27,7 @@
     "angular-date-time-input": "~1.1.0",
     "moment": "^2.11.1",
     "jquery": "^2.2.4",
-    "bootstrap": "^3.3.6"
+    "bootstrap": "^3.3.6",
+    "angularjs-dropdown-multiselect": "^1.11.7"
   }
 }

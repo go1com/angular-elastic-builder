@@ -84,10 +84,14 @@
           case 'multi':
             var vals = group[key][obj.field];
             if (typeof vals === 'string') vals = [ vals ];
-            obj.values = fieldData.choices.reduce(function(prev, choice) {
-              prev[choice] = group[key][obj.field].indexOf(choice) !== -1;
-              return prev;
-            }, {});
+            obj.values = [];
+            obj.options = [];
+            fieldData.choices.forEach(function (choice, index) {
+              if (vals.indexOf(choice) !== -1) {
+                obj.values.push({id: index});
+              }
+              obj.options.push({id: index, label: choice});
+            });
             break;
           case 'date':
             obj.subType = truthy ? 'equals' : 'notEquals';
@@ -344,11 +348,10 @@
 
       case 'multi':
         obj.terms = {};
-        obj.terms[fieldName] = Object.keys(group.values || {}).reduce(function(prev, key) {
-          if (group.values[key]) prev.push(key);
-
-          return prev;
-        }, []);
+        obj.terms[fieldName] = [];
+        group.values.forEach(function (value) {
+          obj.terms[fieldName].push(fieldData.choices[value.id]);
+        });
         break;
 
       case 'select':

@@ -2,7 +2,7 @@
  * # angular-elastic-builder
  * ## Angular Module for building an Elasticsearch Query
  *
- * @version v1.12.0
+ * @version v1.13.0
  * @link https://github.com/dncrews/angular-elastic-builder.git
  * @license MIT
  * @author Dan Crews <crewsd@gmail.com>
@@ -53,7 +53,8 @@
 .elastic-builder-rule .rule-text,
 .elastic-builder-rule select,
 .elastic-builder-rule input,
-.elastic-builder-rule > .btn {
+.elastic-builder-rule > .btn,
+.elastic-builder-rule .multi-rule span {
   position: relative;
   margin: 0 5px;
 }

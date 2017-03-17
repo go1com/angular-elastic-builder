@@ -1,8 +1,3 @@
-<span class="multi-rule form-control">
-  <span data-ng-repeat="choice in guide.choices">
-    <label class="checkbox">
-      <input type="checkbox" data-ng-model="rule.values[choice]">
-      {{ choice }}
-    </label>
-  </span>
+<span class="multi-rule">
+  <span ng-dropdown-multiselect="" options="rule.options" selected-model="rule.values" checkboxes="true"></span>
 </span>

@@ -12,7 +12,8 @@
   angular.module('angular-elastic-builder', [
     'RecursionHelper',
     'ui.bootstrap.datetimepicker',
-    'ui.dateTimeInput'
+    'ui.dateTimeInput',
+    'angularjs-dropdown-multiselect'
   ]);
 
 })(window.angular);

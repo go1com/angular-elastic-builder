@@ -43,7 +43,8 @@
 .elastic-builder-rule .rule-text,
 .elastic-builder-rule select,
 .elastic-builder-rule input,
-.elastic-builder-rule > .btn {
+.elastic-builder-rule > .btn,
+.elastic-builder-rule .multi-rule span {
   position: relative;
   margin: 0 5px;
 }
