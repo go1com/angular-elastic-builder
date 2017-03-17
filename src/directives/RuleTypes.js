@@ -40,6 +40,9 @@
               'equals',
               'notEquals',
 
+              'contains',
+              'notContains',
+
               'gt',
               'gte',
               'lt',

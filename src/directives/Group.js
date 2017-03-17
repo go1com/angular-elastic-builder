@@ -33,7 +33,7 @@
             scope.addGroup = function() {
               group.rules.push({
                 type: 'group',
-                subType: 'and',
+                subType: 'must',
                 rules: [],
               });
             };

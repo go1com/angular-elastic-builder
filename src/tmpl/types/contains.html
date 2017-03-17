@@ -1,0 +1,27 @@
+<span class="contains-rule">
+  <select data-ng-model="rule.subType" class="form-control">
+    <!-- Term Options -->
+    <optgroup label="Exact">
+      <option value="equals">Equals</option>
+      <option value="notEquals">Not Equals</option>
+    </optgroup>
+
+    <!-- Contains Options -->
+    <optgroup label="Contains">
+      <option value="contains">Contains</option>
+      <option value="notContains">Does not contain</option>
+    </optgroup>
+
+    <!-- Generic Options -->
+    <optgroup label="Generic">
+      <option value="exists">Exists</option>
+      <option value="notExists">Not Exists</option>
+    </optgroup>
+
+  </select>
+  <input
+    data-ng-if="inputNeeded()"
+    class="form-control"
+    data-ng-model="rule.value"
+    type="text">
+</span>

@@ -47,21 +47,32 @@
     if (truthy !== false) truthy = true;
 
     var key = Object.keys(group)[0];
-    var obj = getFilterTemplate(key);
+    var obj = getFilterItem();
 
     switch (key) {
-      case 'or':
-      case 'and':
-        obj.rules = group[key].map(parseQueryGroup.bind(group, fieldMap));
-        obj.subType = key;
+      case 'bool':
+        // Support ES 5.0 http://stackoverflow.com/a/40755927
+        var subKey = Object.keys(group[key])[0];
+        switch (subKey) {
+          case 'must':
+            obj = getFilterGroup();
+            obj.rules = group[key][subKey].map(parseQueryGroup.bind(group, fieldMap));
+            obj.subType = 'must';
+            break;
+          case 'should':
+            obj = getFilterGroup();
+            obj.rules = group[key][subKey].map(parseQueryGroup.bind(group, fieldMap));
+            obj.subType = 'should';
+            break;
+          case 'must_not':
+            obj = parseQueryGroup(fieldMap, group[key][subKey], false);
+            break;
+        }
         break;
-      case 'missing':
+
       case 'exists':
         obj.field = group[key].field;
-        obj.subType = {
-          exists: 'exists',
-          missing: 'notExists',
-        }[key];
+        obj.subType = truthy ? 'exists' : 'notExists';
         delete obj.value;
         break;
       case 'term':
@@ -102,7 +113,6 @@
         switch (fieldData.type) {
           case 'date':
             var date;
-            obj.field = Object.keys(group[key])[0];
 
             if (Object.keys(group[key][obj.field]).length === 2) {
               date = group[key][obj.field].gte;
@@ -126,7 +136,6 @@
             }
             break;
           case 'number':
-            obj.field = Object.keys(group[key])[0];
             obj.subType = Object.keys(group[key][obj.field])[0];
             obj.value = group[key][obj.field][obj.subType];
             break;
@@ -149,16 +158,17 @@
         break;
       case 'match_phrase':
         obj.field = Object.keys(group[key])[0];
-        obj.subType = 'matchPhrase';
-        obj.value = group[key][obj.field];
-        break;
-
-      case 'not':
-        obj = parseQueryGroup(fieldMap, group[key].filter, false);
-        break;
-
-      case 'nested':
-        obj = parseQueryGroup(fieldMap, group[key].filter);
+        var fieldData = fieldMap[obj.field];
+        switch (fieldData.type) {
+          case 'match':
+            obj.subType = 'matchPhrase';
+            obj.value = group[key][obj.field];
+            break;
+          case 'contains':
+            obj.subType = truthy ? 'contains' : 'notContains';
+            obj.value = group[key][obj.field];
+            break;
+        }
         break;
       default:
         obj.field = Object.keys(group[key])[0];
@@ -171,7 +181,8 @@
   function parseFilterGroup(fieldMap, $filter, group) {
     var obj = {};
     if (group.type === 'group') {
-      obj[group.subType] = group.rules.map(parseFilterGroup.bind(group, fieldMap, $filter)).filter(function(item) {
+      obj.bool = {};
+      obj.bool[group.subType] = group.rules.map(parseFilterGroup.bind(group, fieldMap, $filter)).filter(function(item) {
         return !!item;
       });
       return obj;
@@ -195,14 +206,48 @@
             break;
           case 'notEquals':
             if (group.value === undefined) return;
-            obj.not = { filter: { term: {}}};
-            obj.not.filter.term[fieldName] = group.value;
+            obj.bool = { must_not: { term: {}}};
+            obj.bool.must_not.term[fieldName] = group.value;
             break;
           case 'exists':
             obj.exists = { field: fieldName };
             break;
           case 'notExists':
-            obj.missing = { field: fieldName };
+            obj.bool = { must_not: { exists: { field: fieldName }}};
+            break;
+          default:
+            throw new Error('unexpected subtype ' + group.subType);
+        }
+        break;
+      case 'contains':
+        if (!group.subType) return;
+
+        switch (group.subType) {
+          case 'equals':
+            if (group.value === undefined) return;
+            obj.term = {};
+            obj.term[fieldName] = group.value;
+            break;
+          case 'notEquals':
+            if (group.value === undefined) return;
+            obj.bool = { must_not: { term: {}}};
+            obj.bool.must_not.term[fieldName] = group.value;
+            break;
+          case 'contains':
+            if (group.value === undefined) return;
+            obj.match_phrase = {};
+            obj.match_phrase[fieldName] = group.value;
+            break;
+          case 'notContains':
+            if (group.value === undefined) return;
+            obj.bool = { must_not: { match_phrase: {}}};
+            obj.bool.must_not.match_phrase[fieldName] = group.value;
+            break;
+          case 'exists':
+            obj.exists = { field: fieldName };
+            break;
+          case 'notExists':
+            obj.bool = { must_not: { exists: { field: fieldName }}};
             break;
           default:
             throw new Error('unexpected subtype ' + group.subType);
@@ -226,8 +271,8 @@
             break;
           case 'notEquals':
             if (group.value === undefined) return;
-            obj.not = { filter: { term: {}}};
-            obj.not.filter.term[fieldName] = group.value;
+            obj.bool = { must_not: { term: {}}};
+            obj.bool.must_not.term[fieldName] = group.value;
             break;
           case 'lt':
           case 'lte':
@@ -242,7 +287,7 @@
             obj.exists = { field: fieldName };
             break;
           case 'notExists':
-            obj.missing = { field: fieldName };
+            obj.bool = { must_not: { exists: { field: fieldName }}};
             break;
           default:
             throw new Error('unexpected subtype ' + group.subType);
@@ -260,8 +305,8 @@
             break;
           case 'notEquals':
             if (!angular.isDate(group.date)) return;
-            obj.not = { filter: { term: {}}};
-            obj.not.filter.term[fieldName] = formatDate($filter, group.date);
+            obj.bool = { must_not: { term: {}}};
+            obj.bool.must_not.term[fieldName] = formatDate($filter, group.date);
             break;
           case 'lt':
           case 'lte':
@@ -290,7 +335,7 @@
             obj.exists = { field: fieldName };
             break;
           case 'notExists':
-            obj.missing = { field: fieldName };
+            obj.bool = { must_not: { exists: { field: fieldName }}};
             break;
           default:
             throw new Error('unexpected subtype ' + group.subType);
@@ -342,39 +387,28 @@
         throw new Error('unexpected type ' + fieldData.type);
     }
 
-    if (fieldData.nested) {
-      obj = {
-        nested: {
-          path: fieldData.path,
-          filter: obj
-        }
-      };
-    }
-
     count += 1;
     return obj;
   }
 
-  function getFilterTemplate(key) {
-    var typeMap = {
-      or: 'group',
-      and: 'group',
-    };
-    var type = typeMap[key] || 'item';
-    var templates = {
-      group: {
-        type: 'group',
-        subType: '',
-        rules: [],
-      },
-      item: {
-        field: '',
-        subType: '',
-        value: '',
-      },
+  function getFilterItem() {
+    var item = {
+      field: '',
+      subType: '',
+      value: '',
     };
 
-    return angular.copy(templates[type]);
+    return angular.copy(item);
+  }
+
+  function getFilterGroup() {
+    var group = {
+      type: 'group',
+      subType: '',
+      rules: [],
+    };
+
+    return angular.copy(group);
   }
 
   function formatDate($filter, date) {

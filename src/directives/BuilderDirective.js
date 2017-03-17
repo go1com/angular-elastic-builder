@@ -45,7 +45,7 @@
             scope.addGroup = function() {
               scope.filters.push({
                 type: 'group',
-                subType: 'and',
+                subType: 'must',
                 rules: [],
               });
             };

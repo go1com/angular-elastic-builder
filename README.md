@@ -69,11 +69,11 @@ $scope.elasticBuilderData.fields = {
  'test.term': { title: 'Test Term', type: 'term' },
  'test.boolean': { title: 'Test Boolean', type: 'boolean' },
  'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ 'AZ', 'CA', 'CT' ]},
+ 'test.person.name.contains': { title: 'Test Contains', type: 'contains'},
  'test.date': { title: 'Test Date', type: 'date' },
  'test.otherdate': { title: 'Test Other Date', type: 'date' },
  'test.match': { title: 'Test Match', type: 'match' },
- 'test.select': { title: 'Test Select', type: 'select', choices: [ 'Active', 'Pending', 'Working', 'Finished' ] },
- 'test.nested.term': { title: 'Test Term', type: 'term', 'nested': true, 'path': 'test.nested' }
+ 'test.select': { title: 'Test Select', type: 'select', choices: [ 'Active', 'Pending', 'Working', 'Finished' ] }
 };
 ```
 
@@ -124,10 +124,15 @@ Which represents the following Elasticsearch Query:
     }
   },
   {
-    "not": {
-      "filter": {
-        "term": {
-          "test.term": "asdfasdf"
+    'match_phrase': {
+      'test.person.name.contains': 'My First Name'
+    }
+  },
+  {
+    'bool': {
+      'must_not': {
+        'term': {
+          'test.term': 'Not me'
         }
       }
     }
@@ -153,16 +158,6 @@ Which represents the following Elasticsearch Query:
   {
     "term": {
       "test.select": "Working"
-    }
-  },
-  {
-    "nested": {
-      "path": "test.nested",
-      "filter": {
-        "term": {
-          "test.nested.term": "sample text"
-        }
-      }
     }
   }
 ]

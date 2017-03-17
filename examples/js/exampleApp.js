@@ -10,27 +10,29 @@
 
     data.query = [
       {
-        'and': [
-          {
-            'term': {
-              'test.date': '2016-04-08T09:16:48'
-            }
-          },
-          {
-            'range': {
-              'test.number': {
-                'gte': 650
+        'bool': {
+          'must': [
+            {
+              'term': {
+                'test.date': '2016-04-08T09:16:48'
+              }
+            },
+            {
+              'range': {
+                'test.number': {
+                  'gte': 650
+                }
+              }
+            },
+            {
+              'range': {
+                'test.number': {
+                  'lt': 850
+                }
               }
             }
-          },
-          {
-            'range': {
-              'test.number': {
-                'lt': 850
-              }
-            }
-          }
-        ]
+          ]
+        }
       },
       {
         'term': {
@@ -43,10 +45,15 @@
         }
       },
       {
-        'not': {
-          'filter': {
+        'match_phrase': {
+          'test.person.name.contains': 'My First Name'
+        }
+      },
+      {
+        'bool': {
+          'must_not': {
             'term': {
-              'test.term': 'asdfasdf'
+              'test.term': 'Not me'
             }
           }
         }
@@ -73,16 +80,6 @@
         'term': {
           'test.select': 'Working'
         }
-      },
-      {
-        "nested": {
-          "path": "test.nested",
-          "filter": {
-            "term": {
-              "test.nested.term": "sample text"
-            }
-          }
-        }
       }
     ];
 
@@ -91,11 +88,11 @@
      'test.term': { title: 'Test Term', type: 'term' },
      'test.boolean': { title: 'Test Boolean', type: 'boolean' },
      'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ 'AZ', 'CA', 'CT' ]},
+     'test.person.name.contains': { title: 'Test Contains', type: 'contains'},
      'test.date': { title: 'Test Date', type: 'date' },
      'test.otherdate': { title: 'Test Other Date', type: 'date' },
      'test.match': { title: 'Test Match', type: 'match' },
-     'test.select': { title: 'Test Select', type: 'select', choices: [ 'Active', 'Pending', 'Working', 'Finished' ] },
-     'test.nested.term': { title: 'Test Nested Term', type: 'term', 'nested': true, 'path': 'test.nested' }
+     'test.select': { title: 'Test Select', type: 'select', choices: [ 'Active', 'Pending', 'Working', 'Finished' ] }
     };
 
     data.needsUpdate = true;
@@ -103,7 +100,7 @@
     this.showQuery = function() {
       var queryToShow = {
         size: 0,
-        filter: { and : data.query }
+        bool: { must : data.query }
       };
 
       return JSON.stringify(queryToShow, null, 2);
