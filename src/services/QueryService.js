@@ -85,12 +85,10 @@
             var vals = group[key][obj.field];
             if (typeof vals === 'string') vals = [ vals ];
             obj.values = [];
-            obj.options = [];
             fieldData.choices.forEach(function (choice, index) {
               if (vals.indexOf(choice) !== -1) {
                 obj.values.push({id: index});
               }
-              obj.options.push({id: index, label: choice});
             });
             break;
           case 'date':

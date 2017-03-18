@@ -64,6 +64,14 @@
           if (!scope.rule.date) {
             scope.rule.date = new Date();
           }
+
+          scope.buildOptions = function() {
+            scope.rule.values = [];
+            scope.rule.options = [];
+            scope.guide.choices.forEach(function (choice, index) {
+              scope.rule.options.push({id: index, label: choice});
+            });
+          };
         },
 
       };
