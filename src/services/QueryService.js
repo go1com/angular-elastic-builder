@@ -347,6 +347,7 @@
         break;
 
       case 'multi':
+        if (group.values === undefined) return;
         obj.terms = {};
         obj.terms[fieldName] = [];
         group.values.forEach(function (value) {

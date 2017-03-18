@@ -2,7 +2,7 @@
  * # angular-elastic-builder
  * ## Angular Module for building an Elasticsearch Query
  *
- * @version v1.13.0
+ * @version v1.13.1
  * @link https://github.com/dncrews/angular-elastic-builder.git
  * @license MIT
  * @author Dan Crews <crewsd@gmail.com>
@@ -666,6 +666,7 @@
         break;
 
       case 'multi':
+        if (group.values === undefined) return;
         obj.terms = {};
         obj.terms[fieldName] = [];
         group.values.forEach(function (value) {
