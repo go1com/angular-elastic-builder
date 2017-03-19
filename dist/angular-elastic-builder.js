@@ -2,7 +2,7 @@
  * # angular-elastic-builder
  * ## Angular Module for building an Elasticsearch Query
  *
- * @version v1.13.3
+ * @version v1.13.4
  * @link https://github.com/dncrews/angular-elastic-builder.git
  * @license MIT
  * @author Dan Crews <crewsd@gmail.com>
@@ -310,7 +310,7 @@
           }
 
           scope.$watch('guide.choices', function(choices) {
-            if (scope.guide.type === 'multi' && choices) {
+            if (scope.guide && scope.guide.type === 'multi' && choices) {
               scope.rule.values = [];
               scope.rule.options = [];
               scope.guide.choices.forEach(function (choice, index) {

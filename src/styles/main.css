@@ -21,7 +21,6 @@
 }
 
 .elastic-builder-rule .multi-rule {
-  background: #fff;
   position: relative;
 }
 
@@ -82,4 +81,8 @@
 
 .elastic-builder-rule .multi-rule .multiselect-wrapper {
   display: inline-block;
+}
+
+.elastic-builder-rule .multi-rule .multiselect-wrapper .dropdown-multiselect {
+  float: none;
 }
