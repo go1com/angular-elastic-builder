@@ -44,7 +44,7 @@
 .elastic-builder-rule select,
 .elastic-builder-rule input,
 .elastic-builder-rule > .btn,
-.elastic-builder-rule .multi-rule span {
+.elastic-builder-rule .multi-rule .multiselect-wrapper {
   position: relative;
   margin: 0 5px;
 }
@@ -78,4 +78,8 @@
   bottom: 0;
   height: 100%;
   border-color: #fff;
+}
+
+.elastic-builder-rule .multi-rule .multiselect-wrapper {
+  display: inline-block;
 }
