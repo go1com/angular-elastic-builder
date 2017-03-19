@@ -30,6 +30,11 @@
                   'lt': 850
                 }
               }
+            },
+            {
+              'term': {
+                'test.person.name.contains.raw': 'My Full Name'
+              }
             }
           ]
         }
@@ -88,6 +93,7 @@
      'test.term': { title: 'Test Term', type: 'term' },
      'test.boolean': { title: 'Test Boolean', type: 'boolean' },
      'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ 'AZ', 'CA', 'CT' ]},
+     'test.person.gender.multi2': { title: 'Test Multi 2', type: 'multi', choices: [ 'Male', 'Female', 'Other' ]},
      'test.person.name.contains': { title: 'Test Contains', type: 'contains'},
      'test.date': { title: 'Test Date', type: 'date' },
      'test.otherdate': { title: 'Test Other Date', type: 'date' },

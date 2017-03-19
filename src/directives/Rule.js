@@ -23,12 +23,13 @@
 
         link: function(scope) {
           scope.getType = function() {
-            var fields = scope.elasticFields
-              , field = scope.rule.field;
+            var fieldMap = scope.elasticFields
+              , fieldName = scope.rule.field;
 
-            if (!fields || !field) return;
+            if (!fieldMap || !fieldName) return;
 
-            return fields[field].type;
+            var field = fieldName in fieldMap ? fieldMap[fieldName] : fieldMap[fieldName.replace('.raw', '')];
+            return field.type;
           };
           scope.resetRule = function(rule) {
             delete rule.subType;

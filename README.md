@@ -77,6 +77,18 @@ $scope.elasticBuilderData.fields = {
 };
 ```
 
+To use contains field, your mapping should be:
+```
+"test.person.name.contains": {
+  "type": "text",
+  "fields": {
+    "raw": {
+      "type":  "keyword"
+    }
+  }
+},
+```
+
 ```html
 <div data-elastic-builder="elasticBuilderData"></div>
 ```
