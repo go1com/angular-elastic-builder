@@ -39,6 +39,7 @@ Includes js and css files into your app.
 <script type="text/javascript" src="bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js"></script>
 <script type="text/javascript" src="bower_components/angular-recursion/angular-recursion.min.js"></script>
 <script type="text/javascript" src="bower_components/angular-date-time-input/src/dateTimeInput.js"></script>
+<script type="text/javascript" src="bower_components/angularjs-dropdown-multiselect/src/angularjs-dropdown-multiselect.js"></script>
 <script type="text/javascript" src="bower_components/angular-elastic-builder-tienvx/angular-elastic-builder.js"></script>
 ```
 
@@ -68,12 +69,13 @@ $scope.elasticBuilderData.fields = {
  'test.number': { title: 'Test Number', type: 'number', minimum: 650 },
  'test.term': { title: 'Test Term', type: 'term' },
  'test.boolean': { title: 'Test Boolean', type: 'boolean' },
- 'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ 'AZ', 'CA', 'CT' ]},
+ 'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ {id: 'AZ', label: 'Arizona'}, {id: 'CA', label: 'California'}, {id: 'CT', label: 'Connecticut'} ]},
+ 'test.person.gender.multi2': { title: 'Test Multi 2', type: 'multi', choices: [ {id: 'male', label: 'Male'}, {id: 'female', label: 'Female'}, {id: 'other', label: 'Other'} ]},
  'test.person.name.contains': { title: 'Test Contains', type: 'contains'},
  'test.date': { title: 'Test Date', type: 'date' },
  'test.otherdate': { title: 'Test Other Date', type: 'date' },
  'test.match': { title: 'Test Match', type: 'match' },
- 'test.select': { title: 'Test Select', type: 'select', choices: [ 'Active', 'Pending', 'Working', 'Finished' ] }
+ 'test.select': { title: 'Test Select', type: 'select', choices: [ {id: 0, label: 'Active'}, {id: 1, label: 'Pending'}, {id: 2, label: 'Working'}, {id: 3, label: 'Finished'} ] }
 };
 ```
 
@@ -100,27 +102,34 @@ Which represents the following Elasticsearch Query:
 ```json
 [
   {
-    "and": [
-      {
-        "term": {
-          "test.date": "2016-04-08T16:16:48+0700"
-        }
-      },
-      {
-        "range": {
-          "test.number": {
-            "gte": 650
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "test.date": "2016-04-08T16:16:48+0700"
+          }
+        },
+        {
+          "range": {
+            "test.number": {
+              "gte": 650
+            }
+          }
+        },
+        {
+          "range": {
+            "test.number": {
+              "lt": 850
+            }
+          }
+        },
+        {
+          "term": {
+            "test.person.name.contains.raw": "My Full Name"
           }
         }
-      },
-      {
-        "range": {
-          "test.number": {
-            "lt": 850
-          }
-        }
-      }
-    ]
+      ]
+    }
   },
   {
     "term": {
@@ -129,10 +138,12 @@ Which represents the following Elasticsearch Query:
   },
   {
     "terms": {
-      "test.state.multi": [
-        "AZ",
-        "CT"
-      ]
+      "test.state.multi": [ "AZ", "CT" ]
+    }
+  },
+  {
+    "terms": {
+      "test.person.gender.multi2": [ "male", "female" ]
     }
   },
   {
@@ -169,7 +180,7 @@ Which represents the following Elasticsearch Query:
   },
   {
     "term": {
-      "test.select": "Working"
+      "test.select": 2
     }
   }
 ]
@@ -179,11 +190,15 @@ Which represents the following Elasticsearch Query:
 ### Field Options
   - `type`: This determines how the fields are displayed in the form.
     - Currently supported:
-      - `'number'`: in addition to Generic Options, gets "&gt;", "&ge;", "&lt;", "&le;", "="
-      - `'term'`: in addition to Generic Options, gets "Equals" and "! Equals"
+      - `'number'`: In addition to Generic Options, gets "&gt;", "&ge;", "&lt;", "&le;", "="
+      - `'term'`: In addition to Generic Options, gets "Equals" and "! Equals"
+      - `'contains'`: In addition to Generic Options, gets "Equals", "! Equals", "Contains Phrase", "! Contains Phrase"
+      - `'match'`: In addition to Generic Options, gets "Contains Any Words" and "Contains All Words" and "Contains Phrase"
       - `'boolean'`: Does not get Generic Options. Gets `true` and `false`
         - These are actually "equals 0" and "equals 1" for the database query
-      - `'date'`: in addition to Generic Options, gets "&gt;", "&ge;", "&lt;", "&le;", "="
+      - `'multi'`: Does not get Generic Options. Gets options defined in choices. Allowed to select multiple options.
+      - `'select'`: Does not get Generic Options. Gets options defined in choices. Allowed to select single option.
+      - `'date'`: In addition to Generic Options, gets "&gt;", "&ge;", "&lt;", "&le;", "="
 
 Generic Options
   - In addition to any specific options for fields, all fields also get a "Exists" and "! Exists" option

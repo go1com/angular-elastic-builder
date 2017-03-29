@@ -4,6 +4,6 @@
   <select
     data-ng-model="rule.value"
     class="form-control"
-    data-ng-options="choice for choice in guide.choices">
+    data-ng-options="choice as choice.label for choice in guide.choices track by choice.id">
   </select>
 </span>

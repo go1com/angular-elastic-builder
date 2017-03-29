@@ -64,16 +64,6 @@
           if (!scope.rule.date) {
             scope.rule.date = new Date();
           }
-
-          scope.$watch('guide.choices', function(choices) {
-            if (scope.guide && scope.guide.type === 'multi' && choices) {
-              scope.rule.values = [];
-              scope.rule.options = [];
-              scope.guide.choices.forEach(function (choice, index) {
-                scope.rule.options.push({id: index, label: choice});
-              });
-            }
-          });
         },
 
       };

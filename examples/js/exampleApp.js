@@ -50,6 +50,11 @@
         }
       },
       {
+        'terms': {
+          'test.person.gender.multi2': [ 'male', 'female' ]
+        }
+      },
+      {
         'match_phrase': {
           'test.person.name.contains': 'My First Name'
         }
@@ -83,7 +88,7 @@
       },
       {
         'term': {
-          'test.select': 'Working'
+          'test.select': 2
         }
       }
     ];
@@ -92,13 +97,13 @@
      'test.number': { title: 'Test Number', type: 'number', minimum: 650 },
      'test.term': { title: 'Test Term', type: 'term' },
      'test.boolean': { title: 'Test Boolean', type: 'boolean' },
-     'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ 'AZ', 'CA', 'CT' ]},
-     'test.person.gender.multi2': { title: 'Test Multi 2', type: 'multi', choices: [ 'Male', 'Female', 'Other' ]},
+     'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ {id: 'AZ', label: 'Arizona'}, {id: 'CA', label: 'California'}, {id: 'CT', label: 'Connecticut'} ]},
+     'test.person.gender.multi2': { title: 'Test Multi 2', type: 'multi', choices: [ {id: 'male', label: 'Male'}, {id: 'female', label: 'Female'}, {id: 'other', label: 'Other'} ]},
      'test.person.name.contains': { title: 'Test Contains', type: 'contains'},
      'test.date': { title: 'Test Date', type: 'date' },
      'test.otherdate': { title: 'Test Other Date', type: 'date' },
      'test.match': { title: 'Test Match', type: 'match' },
-     'test.select': { title: 'Test Select', type: 'select', choices: [ 'Active', 'Pending', 'Working', 'Finished' ] }
+     'test.select': { title: 'Test Select', type: 'select', choices: [ {id: 0, label: 'Active'}, {id: 1, label: 'Pending'}, {id: 2, label: 'Working'}, {id: 3, label: 'Finished'} ] }
     };
 
     data.needsUpdate = true;

@@ -85,9 +85,9 @@
             var vals = group[key][obj.field];
             if (typeof vals === 'string') vals = [ vals ];
             obj.values = [];
-            fieldData.choices.forEach(function (choice, index) {
-              if (vals.indexOf(choice) !== -1) {
-                obj.values.push({id: index});
+            fieldData.choices.forEach(function (choice) {
+              if (vals.indexOf(choice.id) !== -1) {
+                obj.values.push({id: choice.id});
               }
             });
             break;
@@ -101,8 +101,14 @@
             obj.value = group[key][obj.field];
             break;
           case 'boolean':
-          case 'select':
             obj.value = group[key][obj.field];
+            break;
+          case 'select':
+            fieldData.choices.forEach(function (choice) {
+              if (group[key][obj.field] === choice.id) {
+                obj.value = choice;
+              }
+            });
             break;
           case 'contains':
             obj.subType = truthy ? 'equals' : 'notEquals';
@@ -353,14 +359,14 @@
         obj.terms = {};
         obj.terms[fieldName] = [];
         group.values.forEach(function (value) {
-          obj.terms[fieldName].push(fieldData.choices[value.id]);
+          obj.terms[fieldName].push(value.id);
         });
         break;
 
       case 'select':
         if (group.value === undefined) return;
         obj.term = {};
-        obj.term[fieldName] = group.value;
+        obj.term[fieldName] = group.value.id;
         break;
 
       case 'match':
