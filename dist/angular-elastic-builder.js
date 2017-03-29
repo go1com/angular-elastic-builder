@@ -2,7 +2,7 @@
  * # angular-elastic-builder
  * ## Angular Module for building an Elasticsearch Query
  *
- * @version v1.14.0
+ * @version v1.14.1
  * @link https://github.com/dncrews/angular-elastic-builder.git
  * @license MIT
  * @author Dan Crews <crewsd@gmail.com>
@@ -309,6 +309,12 @@
           if (!scope.rule.date) {
             scope.rule.date = new Date();
           }
+
+          scope.$watch('guide.choices', function() {
+            if (scope.guide && scope.guide.type === 'multi' && !scope.rule.values) {
+              scope.rule.values = [];
+            }
+          });
         },
 
       };
