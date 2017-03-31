@@ -82,10 +82,10 @@ $scope.elasticBuilderData.fields = {
 To use contains field, your mapping should be:
 ```
 "test.person.name.contains": {
-  "type": "text",
+  "type": "keyword",
   "fields": {
-    "raw": {
-      "type":  "keyword"
+    "analyzed": {
+      "type":  "text"
     }
   }
 },
@@ -124,8 +124,8 @@ Which represents the following Elasticsearch Query:
           }
         },
         {
-          "term": {
-            "test.person.name.contains.raw": "My Full Name"
+          "match_phrase": {
+            "test.person.name.contains.analyzed": "My First Name"
           }
         }
       ]
@@ -147,8 +147,8 @@ Which represents the following Elasticsearch Query:
     }
   },
   {
-    "match_phrase": {
-      "test.person.name.contains": "My First Name"
+    "term": {
+      "test.person.name.contains": "My Full Name"
     }
   },
   {

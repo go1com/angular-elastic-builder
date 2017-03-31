@@ -32,8 +32,8 @@
               }
             },
             {
-              'term': {
-                'test.person.name.contains.raw': 'My Full Name'
+              'match_phrase': {
+                'test.person.name.contains.analyzed': 'My First Name'
               }
             }
           ]
@@ -55,8 +55,8 @@
         }
       },
       {
-        'match_phrase': {
-          'test.person.name.contains': 'My First Name'
+        'term': {
+          'test.person.name.contains': 'My Full Name'
         }
       },
       {

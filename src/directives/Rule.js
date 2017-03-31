@@ -28,7 +28,7 @@
 
             if (!fieldMap || !fieldName) return;
 
-            var field = fieldName in fieldMap ? fieldMap[fieldName] : fieldMap[fieldName.replace('.raw', '')];
+            var field = fieldName in fieldMap ? fieldMap[fieldName] : fieldMap[fieldName.replace('.analyzed', '')];
             return field.type;
           };
           scope.resetRule = function(rule) {

@@ -78,7 +78,7 @@
       case 'term':
       case 'terms':
         obj.field = Object.keys(group[key])[0];
-        var fieldData = obj.field in fieldMap ? fieldMap[obj.field] : fieldMap[obj.field.replace('.raw', '')];
+        var fieldData = fieldMap[obj.field];
 
         switch (fieldData.type) {
           case 'multi':
@@ -113,7 +113,6 @@
           case 'contains':
             obj.subType = truthy ? 'equals' : 'notEquals';
             obj.value = group[key][obj.field];
-            obj.field = obj.field.replace('.raw', '');
             break;
           default:
             throw new Error('unexpected type ' + fieldData.type);
@@ -171,7 +170,7 @@
         break;
       case 'match_phrase':
         obj.field = Object.keys(group[key])[0];
-        var fieldData = fieldMap[obj.field];
+        var fieldData = obj.field in fieldMap ? fieldMap[obj.field] : fieldMap[obj.field.replace('.analyzed', '')];
         switch (fieldData.type) {
           case 'match':
             obj.subType = 'matchPhrase';
@@ -180,6 +179,7 @@
           case 'contains':
             obj.subType = truthy ? 'contains' : 'notContains';
             obj.value = group[key][obj.field];
+            obj.field = obj.field.replace('.analyzed', '');
             break;
         }
         break;
@@ -204,7 +204,7 @@
     var fieldName = group.field;
     if (!fieldName) return;
 
-    var fieldData = fieldName in fieldMap ? fieldMap[fieldName] : fieldMap[fieldName.replace('.raw', '')];
+    var fieldData = fieldName in fieldMap ? fieldMap[fieldName] : fieldMap[fieldName.replace('.analyzed', '')];
 
     switch (fieldData.type) {
       case 'term':
@@ -238,22 +238,22 @@
           case 'equals':
             if (group.value === undefined) return;
             obj.term = {};
-            obj.term[fieldName + '.raw'] = group.value;
+            obj.term[fieldName] = group.value;
             break;
           case 'notEquals':
             if (group.value === undefined) return;
             obj.bool = { must_not: { term: {}}};
-            obj.bool.must_not.term[fieldName + '.raw'] = group.value;
+            obj.bool.must_not.term[fieldName] = group.value;
             break;
           case 'contains':
             if (group.value === undefined) return;
             obj.match_phrase = {};
-            obj.match_phrase[fieldName] = group.value;
+            obj.match_phrase[fieldName + '.analyzed'] = group.value;
             break;
           case 'notContains':
             if (group.value === undefined) return;
             obj.bool = { must_not: { match_phrase: {}}};
-            obj.bool.must_not.match_phrase[fieldName] = group.value;
+            obj.bool.must_not.match_phrase[fieldName + '.analyzed'] = group.value;
             break;
           case 'exists':
             obj.exists = { field: fieldName };
