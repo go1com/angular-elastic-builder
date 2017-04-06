@@ -29,7 +29,7 @@
   function toFilters(data){
     var query = data.query;
     var fieldMap = data.fields;
-    var filters = query.map(parseQueryGroup.bind(query, fieldMap));
+    var filters = query.map(parseQueryGroup.bind(null, fieldMap, true, undefined));
     return filters;
   }
 
@@ -43,7 +43,7 @@
     return query;
   }
 
-  function parseQueryGroup(fieldMap, group, truthy) {
+  function parseQueryGroup(fieldMap, truthy, parent, group) {
     if (truthy !== false) truthy = true;
 
     var key = Object.keys(group)[0];
@@ -56,33 +56,38 @@
         switch (subKey) {
           case 'must':
             obj = getFilterGroup();
-            obj.rules = group[key][subKey].map(parseQueryGroup.bind(group, fieldMap));
+            obj.rules = group[key][subKey].map(parseQueryGroup.bind(null, fieldMap, truthy, parent));
             obj.subType = 'must';
             break;
           case 'should':
             obj = getFilterGroup();
-            obj.rules = group[key][subKey].map(parseQueryGroup.bind(group, fieldMap));
+            obj.rules = group[key][subKey].map(parseQueryGroup.bind(null, fieldMap, truthy, parent));
             obj.subType = 'should';
             break;
           case 'must_not':
-            obj = parseQueryGroup(fieldMap, group[key][subKey], false);
+            obj = parseQueryGroup(fieldMap, false, parent, group[key][subKey]);
             break;
         }
         break;
 
+      case 'has_parent':
+        obj = parseQueryGroup(fieldMap, truthy, group[key].parent_type, group[key].query);
+        break;
+
       case 'exists':
-        obj.field = group[key].field;
+        obj.field = searchField(fieldMap, group[key].field, parent);
         obj.subType = truthy ? 'exists' : 'notExists';
         delete obj.value;
         break;
       case 'term':
       case 'terms':
-        obj.field = Object.keys(group[key])[0];
+        var subKey = Object.keys(group[key])[0];
+        obj.field = searchField(fieldMap, subKey, parent);
         var fieldData = fieldMap[obj.field];
 
         switch (fieldData.type) {
           case 'multi':
-            var vals = group[key][obj.field];
+            var vals = group[key][subKey];
             if (typeof vals === 'string') vals = [ vals ];
             obj.values = [];
             fieldData.choices.forEach(function (choice) {
@@ -93,41 +98,42 @@
             break;
           case 'date':
             obj.subType = truthy ? 'equals' : 'notEquals';
-            obj.date = new Date(group[key][obj.field]);
+            obj.date = new Date(group[key][subKey]);
             break;
           case 'term':
           case 'number':
             obj.subType = truthy ? 'equals' : 'notEquals';
-            obj.value = group[key][obj.field];
+            obj.value = group[key][subKey];
             break;
           case 'boolean':
-            obj.value = group[key][obj.field];
+            obj.value = group[key][subKey];
             break;
           case 'select':
             fieldData.choices.forEach(function (choice) {
-              if (group[key][obj.field] === choice.id) {
+              if (group[key][subKey] === choice.id) {
                 obj.value = choice;
               }
             });
             break;
           case 'contains':
             obj.subType = truthy ? 'equals' : 'notEquals';
-            obj.value = group[key][obj.field];
+            obj.value = group[key][subKey];
             break;
           default:
             throw new Error('unexpected type ' + fieldData.type);
         }
         break;
       case 'range':
-        obj.field = Object.keys(group[key])[0];
+        var subKey = Object.keys(group[key])[0];
+        obj.field = searchField(fieldMap, subKey, parent);
         var fieldData = fieldMap[obj.field];
 
         switch (fieldData.type) {
           case 'date':
             var date;
 
-            if (Object.keys(group[key][obj.field]).length === 2) {
-              date = group[key][obj.field].gte;
+            if (Object.keys(group[key][subKey]).length === 2) {
+              date = group[key][subKey].gte;
 
               if (~date.indexOf('now-')) {
                 obj.subType = 'last';
@@ -137,54 +143,61 @@
 
               if (~date.indexOf('now')) {
                 obj.subType = 'next';
-                date = group[key][obj.field].lte;
+                date = group[key][subKey].lte;
                 obj.value = parseInt(date.split('now+')[1].split('d')[0]);
                 break;
               }
             }
             else {
-              obj.subType = Object.keys(group[key][obj.field])[0];
-              obj.date = group[key][obj.field][obj.subType];
+              obj.subType = Object.keys(group[key][subKey])[0];
+              obj.date = group[key][subKey][obj.subType];
             }
             break;
           case 'number':
-            obj.subType = Object.keys(group[key][obj.field])[0];
-            obj.value = group[key][obj.field][obj.subType];
+            obj.subType = Object.keys(group[key][subKey])[0];
+            obj.value = group[key][subKey][obj.subType];
             break;
         }
         break;
       case 'match':
-        obj.field = Object.keys(group[key])[0];
-        if (typeof group[key][obj.field] === 'string') {
+        var subKey = Object.keys(group[key])[0];
+        obj.field = searchField(fieldMap, subKey, parent);
+        if (typeof group[key][subKey] === 'string') {
           obj.subType = 'matchAny';
-          obj.value = group[key][obj.field];
+          obj.value = group[key][subKey];
         }
-        else if ('operator' in group[key][obj.field]) {
-          obj.subType = group[key][obj.field].operator === 'and' ? 'matchAll' : 'matchAny';
-          obj.value = group[key][obj.field].query;
+        else if ('operator' in group[key][subKey]) {
+          obj.subType = group[key][subKey].operator === 'and' ? 'matchAll' : 'matchAny';
+          obj.value = group[key][subKey].query;
         }
-        else if ('type' in group[key][obj.field] && group[key][obj.field].type === 'phrase') {
+        else if ('type' in group[key][subKey] && group[key][subKey].type === 'phrase') {
           obj.subType = 'matchPhrase';
-          obj.value = group[key][obj.field].query;
+          obj.value = group[key][subKey].query;
         }
         break;
       case 'match_phrase':
-        obj.field = Object.keys(group[key])[0];
-        var fieldData = obj.field in fieldMap ? fieldMap[obj.field] : fieldMap[obj.field.replace('.analyzed', '')];
+        var subKey = Object.keys(group[key])[0];
+        if (subKey.endsWith('.analyzed')) {
+          obj.field = searchField(fieldMap, subKey.replace('.analyzed', ''), parent);
+        }
+        else {
+          obj.field = searchField(fieldMap, subKey, parent);
+        }
+        var fieldData = fieldMap[obj.field];
         switch (fieldData.type) {
           case 'match':
             obj.subType = 'matchPhrase';
-            obj.value = group[key][obj.field];
+            obj.value = group[key][subKey];
             break;
           case 'contains':
             obj.subType = truthy ? 'contains' : 'notContains';
-            obj.value = group[key][obj.field];
-            obj.field = obj.field.replace('.analyzed', '');
+            obj.value = group[key][subKey];
             break;
         }
         break;
       default:
-        obj.field = Object.keys(group[key])[0];
+        var subKey = Object.keys(group[key])[0];
+        obj.field = subKey;
         break;
     }
 
@@ -405,6 +418,15 @@
         throw new Error('unexpected type ' + fieldData.type);
     }
 
+    if (fieldData.parent) {
+      obj = {
+        has_parent: {
+          parent_type: fieldData.parent,
+          query: obj
+        }
+      }
+    }
+
     count += 1;
     return obj;
   }
@@ -434,6 +456,15 @@
     var dateFormat = 'yyyy-MM-ddTHH:mm:ssZ';
     var fDate = $filter('date')(date, dateFormat);
     return fDate;
+  }
+
+  function searchField(fields, fieldName, parent) {
+    var keys = Object.keys(fields);
+    var values = Object.values(fields);
+    var index = values.indexOf(values.filter(function(item) {
+      return item.field === fieldName && item.parent === parent;
+    })[0]);
+    return keys[index];
   }
 
 })(window.angular);

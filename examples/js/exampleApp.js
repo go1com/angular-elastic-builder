@@ -14,26 +14,26 @@
           'must': [
             {
               'term': {
-                'test.date': '2016-04-08T09:16:48'
+                'dob': '2016-04-08T09:16:48'
               }
             },
             {
               'range': {
-                'test.number': {
-                  'gte': 650
+                'age': {
+                  'gte': 21
                 }
               }
             },
             {
               'range': {
-                'test.number': {
-                  'lt': 850
+                'age': {
+                  'lt': 64
                 }
               }
             },
             {
               'match_phrase': {
-                'test.person.name.contains.analyzed': 'My First Name'
+                'name.analyzed': 'Andrew'
               }
             }
           ]
@@ -41,41 +41,36 @@
       },
       {
         'term': {
-          'test.boolean': 0
+          'status': 0
         }
       },
       {
         'terms': {
-          'test.state.multi': [ 'AZ', 'CT' ]
-        }
-      },
-      {
-        'terms': {
-          'test.person.gender.multi2': [ 'male', 'female' ]
+          'state': [ 'AZ', 'CT' ]
         }
       },
       {
         'term': {
-          'test.person.name.contains': 'My Full Name'
+          'name': 'Andrew Barnes'
         }
       },
       {
         'bool': {
           'must_not': {
             'term': {
-              'test.term': 'Not me'
+              'first_name': 'Andrew'
             }
           }
         }
       },
       {
         'exists': {
-          'field': 'test.term'
+          'field': 'first_name'
         }
       },
       {
         'range': {
-          'test.otherdate': {
+          'registration_date': {
             'gte': 'now',
             'lte': 'now+7d'
           }
@@ -83,27 +78,37 @@
       },
       {
         'match': {
-          'test.match': 'brown dog'
+          'about': 'my name is andrew'
         }
       },
       {
         'term': {
-          'test.select': 2
+          'gender': 'male'
+        }
+      },
+      {
+        'has_parent': {
+          'parent_type': 'company',
+          'query': {
+            'term': {
+              'name': 'GO1'
+            }
+          }
         }
       }
     ];
 
     data.fields = {
-     'test.number': { title: 'Test Number', type: 'number', minimum: 650 },
-     'test.term': { title: 'Test Term', type: 'term' },
-     'test.boolean': { title: 'Test Boolean', type: 'boolean' },
-     'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ {id: 'AZ', label: 'Arizona'}, {id: 'CA', label: 'California'}, {id: 'CT', label: 'Connecticut'} ]},
-     'test.person.gender.multi2': { title: 'Test Multi 2', type: 'multi', choices: [ {id: 'male', label: 'Male'}, {id: 'female', label: 'Female'}, {id: 'other', label: 'Other'} ]},
-     'test.person.name.contains': { title: 'Test Contains', type: 'contains'},
-     'test.date': { title: 'Test Date', type: 'date' },
-     'test.otherdate': { title: 'Test Other Date', type: 'date' },
-     'test.match': { title: 'Test Match', type: 'match' },
-     'test.select': { title: 'Test Select', type: 'select', choices: [ {id: 0, label: 'Active'}, {id: 1, label: 'Pending'}, {id: 2, label: 'Working'}, {id: 3, label: 'Finished'} ] }
+      'test.number': { field: 'age', title: 'Age', type: 'number', minimum: 18 },
+      'test.term': { field: 'first_name', title: 'First Name', type: 'term' },
+      'test.boolean': { field: 'status', title: 'Status', type: 'boolean' },
+      'test.multi': { field: 'state', title: 'State', type: 'multi', choices: [ {id: 'AZ', label: 'Arizona'}, {id: 'CA', label: 'California'}, {id: 'CT', label: 'Connecticut'} ]},
+      'test.contains': { field: 'name', title: 'Name', type: 'contains'},
+      'test.date': { field: 'dob', title: 'DOB', type: 'date' },
+      'test.date2': { field: 'registration_date', title: 'Registration Date', type: 'date' },
+      'test.match': { field: 'about', title: 'About', type: 'match' },
+      'test.select': { field: 'gender', title: 'Gender', type: 'select', choices: [ {id: 'male', label: 'Male'}, {id: 'female', label: 'Female'}, {id: 'other', label: 'Other'} ] },
+      'test.parent.term': { field: 'name', parent: 'company', title: 'Company Name', type: 'term' }
     };
 
     data.needsUpdate = true;
