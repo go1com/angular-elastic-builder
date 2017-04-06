@@ -1,8 +1,11 @@
 {
-  "name": "angular-elastic-builder",
-  "version": "1.15.0",
+  "name": "angular-elastic-builder-tienvx",
+  "version": "1.16.0",
   "description": "Angular Module for building an Elasticsearch Query",
   "author": "Dan Crews <crewsd@gmail.com>",
+  "contributors": [
+    "Tien Vo Xuan <tien.xuan.vo@gmail.com> (https://github.com/tienvx)"
+  ],
   "license": "MIT",
   "keywords": [
     "angular",
@@ -10,7 +13,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dncrews/angular-elastic-builder.git"
+    "url": "git@github.com:tienvx/angular-elastic-builder.git"
   },
   "devDependencies": {
     "del": "^1.2.1",

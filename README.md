@@ -66,22 +66,22 @@ $scope.elasticBuilderData.query = [];
  * of data they are
  */
 $scope.elasticBuilderData.fields = {
- 'test.number': { title: 'Test Number', type: 'number', minimum: 650 },
- 'test.term': { title: 'Test Term', type: 'term' },
- 'test.boolean': { title: 'Test Boolean', type: 'boolean' },
- 'test.state.multi': { title: 'Test Multi', type: 'multi', choices: [ {id: 'AZ', label: 'Arizona'}, {id: 'CA', label: 'California'}, {id: 'CT', label: 'Connecticut'} ]},
- 'test.person.gender.multi2': { title: 'Test Multi 2', type: 'multi', choices: [ {id: 'male', label: 'Male'}, {id: 'female', label: 'Female'}, {id: 'other', label: 'Other'} ]},
- 'test.person.name.contains': { title: 'Test Contains', type: 'contains'},
- 'test.date': { title: 'Test Date', type: 'date' },
- 'test.otherdate': { title: 'Test Other Date', type: 'date' },
- 'test.match': { title: 'Test Match', type: 'match' },
- 'test.select': { title: 'Test Select', type: 'select', choices: [ {id: 0, label: 'Active'}, {id: 1, label: 'Pending'}, {id: 2, label: 'Working'}, {id: 3, label: 'Finished'} ] }
+  'test.number': { field: 'age', title: 'Age', type: 'number', minimum: 18 },
+  'test.term': { field: 'first_name', title: 'First Name', type: 'term' },
+  'test.boolean': { field: 'status', title: 'Status', type: 'boolean' },
+  'test.multi': { field: 'state', title: 'State', type: 'multi', choices: [ {id: 'AZ', label: 'Arizona'}, {id: 'CA', label: 'California'}, {id: 'CT', label: 'Connecticut'} ]},
+  'test.contains': { field: 'name', title: 'Name', type: 'contains'},
+  'test.date': { field: 'dob', title: 'DOB', type: 'date' },
+  'test.date2': { field: 'registration_date', title: 'Registration Date', type: 'date' },
+  'test.match': { field: 'about', title: 'About', type: 'match' },
+  'test.select': { field: 'gender', title: 'Gender', type: 'select', choices: [ {id: 'male', label: 'Male'}, {id: 'female', label: 'Female'}, {id: 'other', label: 'Other'} ] },
+  'test.parent.term': { field: 'name', parent: 'company', title: 'Company Name', type: 'term' }
 };
 ```
 
 To use contains field, your mapping should be:
 ```
-"test.person.name.contains": {
+"name": {
   "type": "keyword",
   "fields": {
     "analyzed": {
@@ -100,90 +100,103 @@ The above elasticFields would allow you create the following form:
 
 Which represents the following Elasticsearch Query:
 ```json
-[
-  {
-    "bool": {
-      "must": [
-        {
-          "term": {
-            "test.date": "2016-04-08T16:16:48+0700"
-          }
-        },
-        {
-          "range": {
-            "test.number": {
-              "gte": 650
+{
+  "size": 0,
+  "bool": {
+    "must": [
+      {
+        "bool": {
+          "must": [
+            {
+              "term": {
+                "test.date": "2016-04-08T16:16:48+0700"
+              }
+            },
+            {
+              "range": {
+                "test.number": {
+                  "gte": 21
+                }
+              }
+            },
+            {
+              "range": {
+                "test.number": {
+                  "lt": 64
+                }
+              }
+            },
+            {
+              "match_phrase": {
+                "test.contains.analyzed": "Andrew"
+              }
             }
-          }
-        },
-        {
-          "range": {
-            "test.number": {
-              "lt": 850
-            }
-          }
-        },
-        {
-          "match_phrase": {
-            "test.person.name.contains.analyzed": "My First Name"
-          }
+          ]
         }
-      ]
-    }
-  },
-  {
-    "term": {
-      "test.boolean": 0
-    }
-  },
-  {
-    "terms": {
-      "test.state.multi": [ "AZ", "CT" ]
-    }
-  },
-  {
-    "terms": {
-      "test.person.gender.multi2": [ "male", "female" ]
-    }
-  },
-  {
-    "term": {
-      "test.person.name.contains": "My Full Name"
-    }
-  },
-  {
-    "bool": {
-      "must_not": {
+      },
+      {
         "term": {
-          "test.term": "Not me"
+          "test.boolean": 0
+        }
+      },
+      {
+        "terms": {
+          "test.multi": [
+            "AZ",
+            "CT"
+          ]
+        }
+      },
+      {
+        "term": {
+          "test.contains": "Andrew Barnes"
+        }
+      },
+      {
+        "bool": {
+          "must_not": {
+            "term": {
+              "test.term": "Andrew"
+            }
+          }
+        }
+      },
+      {
+        "exists": {
+          "field": "test.term"
+        }
+      },
+      {
+        "range": {
+          "test.date2": {
+            "gte": "now",
+            "lte": "now+7d"
+          }
+        }
+      },
+      {
+        "match": {
+          "test.match": "my name is andrew"
+        }
+      },
+      {
+        "term": {
+          "test.select": "male"
+        }
+      },
+      {
+        "has_parent": {
+          "parent_type": "company",
+          "query": {
+            "term": {
+              "test.parent.term": "GO1"
+            }
+          }
         }
       }
-    }
-  },
-  {
-    "exists": {
-      "field": "test.term"
-    }
-  },
-  {
-    "range": {
-      "test.otherdate": {
-        "gte": "now",
-        "lte": "now+7d"
-      }
-    }
-  },
-  {
-    "match": {
-      "test.match": "brown dog"
-    }
-  },
-  {
-    "term": {
-      "test.select": 2
-    }
+    ]
   }
-]
+}
 ```
 
 
@@ -214,11 +227,11 @@ will overwrite the current state and data with whatever is now defined in your c
 To work on this module locally, you will need to clone it and run `gulp watch`. This will ensure that your changes get compiled properly. You will also need to make sure you run `gulp` to build the "dist" files before commit.
 
 
-[npm-image]: https://img.shields.io/npm/v/angular-elastic-builder.svg
-[npm-url]: https://www.npmjs.org/package/angular-elastic-builder
-[bower-image]: https://img.shields.io/bower/v/angular-elastic-builder.svg
-[downloads-image]: https://img.shields.io/npm/dm/angular-elastic-builder.svg
-[downloads-url]: https://www.npmjs.org/package/angular-elastic-builder
+[npm-image]: https://img.shields.io/npm/v/angular-elastic-builder-tienvx.svg
+[npm-url]: https://www.npmjs.org/package/angular-elastic-builder-tienvx
+[bower-image]: https://img.shields.io/bower/v/angular-elastic-builder-tienvx.svg
+[downloads-image]: https://img.shields.io/npm/dm/angular-elastic-builder-tienvx.svg
+[downloads-url]: https://www.npmjs.org/package/angular-elastic-builder-tienvx
 [gratipay-image]: https://img.shields.io/gratipay/dncrews.svg
 [gratipay-url]: https://www.gratipay.com/dncrews/
 [screenshot-image]: ./screenshot.png

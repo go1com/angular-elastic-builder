@@ -39,14 +39,14 @@ gulp.task('clean', function(done) {
 
 gulp.task('concatjs', [ 'clean', 'templatecache' ], function() {
   return gulp.src(['./src/module.js', './src/directives/*.js', './src/services/*.js', './src/tmpl/ElasticBuilderTemplates.js'])
-    .pipe(concat(util.format('%s.js', pkg.name)))
+    .pipe(concat(util.format('%s.js', 'angular-elastic-builder')))
     .pipe(gulp.dest('./dist'));
 });
 
 
 gulp.task('concatcss', [ 'clean' ], function() {
   return gulp.src('./src/styles/main.css')
-    .pipe(concat(util.format('%s.css', pkg.name)))
+    .pipe(concat(util.format('%s.css', 'angular-elastic-builder')))
     .pipe(gulp.dest('./dist'));
 });
 
