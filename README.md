@@ -109,26 +109,26 @@ Which represents the following Elasticsearch Query:
           "must": [
             {
               "term": {
-                "test.date": "2016-04-08T16:16:48+0700"
+                "dob": "2016-04-08T16:16:48+0700"
               }
             },
             {
               "range": {
-                "test.number": {
+                "age": {
                   "gte": 21
                 }
               }
             },
             {
               "range": {
-                "test.number": {
+                "age": {
                   "lt": 64
                 }
               }
             },
             {
               "match_phrase": {
-                "test.contains.analyzed": "Andrew"
+                "name.analyzed": "Andrew"
               }
             }
           ]
@@ -136,12 +136,12 @@ Which represents the following Elasticsearch Query:
       },
       {
         "term": {
-          "test.boolean": 0
+          "status": 0
         }
       },
       {
         "terms": {
-          "test.multi": [
+          "state": [
             "AZ",
             "CT"
           ]
@@ -149,26 +149,26 @@ Which represents the following Elasticsearch Query:
       },
       {
         "term": {
-          "test.contains": "Andrew Barnes"
+          "name": "Andrew Barnes"
         }
       },
       {
         "bool": {
           "must_not": {
             "term": {
-              "test.term": "Andrew"
+              "first_name": "Andrew"
             }
           }
         }
       },
       {
         "exists": {
-          "field": "test.term"
+          "field": "first_name"
         }
       },
       {
         "range": {
-          "test.date2": {
+          "registration_date": {
             "gte": "now",
             "lte": "now+7d"
           }
@@ -176,12 +176,12 @@ Which represents the following Elasticsearch Query:
       },
       {
         "match": {
-          "test.match": "my name is andrew"
+          "about": "my name is andrew"
         }
       },
       {
         "term": {
-          "test.select": "male"
+          "gender": "male"
         }
       },
       {
@@ -189,7 +189,7 @@ Which represents the following Elasticsearch Query:
           "parent_type": "company",
           "query": {
             "term": {
-              "test.parent.term": "GO1"
+              "name": "GO1"
             }
           }
         }

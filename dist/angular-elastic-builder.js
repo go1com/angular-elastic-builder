@@ -2,7 +2,7 @@
  * # angular-elastic-builder-tienvx
  * ## Angular Module for building an Elasticsearch Query
  *
- * @version v1.16.0
+ * @version v1.16.1
  * @link git@github.com:tienvx/angular-elastic-builder.git
  * @license MIT
  * @author Dan Crews <crewsd@gmail.com>
@@ -540,10 +540,11 @@
       return obj;
     }
 
-    var fieldName = group.field;
-    if (!fieldName) return;
+    var fieldKey = group.field;
+    if (!fieldKey) return;
 
-    var fieldData = fieldName in fieldMap ? fieldMap[fieldName] : fieldMap[fieldName.replace('.analyzed', '')];
+    var fieldData = fieldMap[fieldKey];
+    var fieldName = fieldData.field;
 
     switch (fieldData.type) {
       case 'term':
