@@ -29,7 +29,7 @@
   function toFilters(data){
     var query = data.query;
     var fieldMap = data.fields;
-    var filters = query.map(parseQueryGroup.bind(null, fieldMap, true, undefined));
+    var filters = query.map(parseQueryGroup.bind(null, fieldMap, true, undefined, undefined));
     return filters;
   }
 
@@ -43,7 +43,7 @@
     return query;
   }
 
-  function parseQueryGroup(fieldMap, truthy, parent, group) {
+  function parseQueryGroup(fieldMap, truthy, parent, nested, group) {
     if (truthy !== false) truthy = true;
 
     var key = Object.keys(group)[0];
@@ -56,33 +56,37 @@
         switch (subKey) {
           case 'must':
             obj = getFilterGroup();
-            obj.rules = group[key][subKey].map(parseQueryGroup.bind(null, fieldMap, truthy, parent));
+            obj.rules = group[key][subKey].map(parseQueryGroup.bind(null, fieldMap, truthy, parent, nested));
             obj.subType = 'must';
             break;
           case 'should':
             obj = getFilterGroup();
-            obj.rules = group[key][subKey].map(parseQueryGroup.bind(null, fieldMap, truthy, parent));
+            obj.rules = group[key][subKey].map(parseQueryGroup.bind(null, fieldMap, truthy, parent, nested));
             obj.subType = 'should';
             break;
           case 'must_not':
-            obj = parseQueryGroup(fieldMap, false, parent, group[key][subKey]);
+            obj = parseQueryGroup(fieldMap, false, parent, nested, group[key][subKey]);
             break;
         }
         break;
 
       case 'has_parent':
-        obj = parseQueryGroup(fieldMap, truthy, group[key].parent_type, group[key].query);
+        obj = parseQueryGroup(fieldMap, truthy, group[key].parent_type, nested, group[key].query);
+        break;
+
+      case 'nested':
+        obj = parseQueryGroup(fieldMap, truthy, parent, group[key].path, group[key].query);
         break;
 
       case 'exists':
-        obj.field = searchField(fieldMap, group[key].field, parent);
+        obj.field = searchField(fieldMap, group[key].field, parent, nested);
         obj.subType = truthy ? 'exists' : 'notExists';
         delete obj.value;
         break;
       case 'term':
       case 'terms':
         var subKey = Object.keys(group[key])[0];
-        obj.field = searchField(fieldMap, subKey, parent);
+        obj.field = searchField(fieldMap, subKey, parent, nested);
         var fieldData = fieldMap[obj.field];
 
         switch (fieldData.type) {
@@ -125,7 +129,7 @@
         break;
       case 'range':
         var subKey = Object.keys(group[key])[0];
-        obj.field = searchField(fieldMap, subKey, parent);
+        obj.field = searchField(fieldMap, subKey, parent, nested);
         var fieldData = fieldMap[obj.field];
 
         switch (fieldData.type) {
@@ -161,7 +165,7 @@
         break;
       case 'match':
         var subKey = Object.keys(group[key])[0];
-        obj.field = searchField(fieldMap, subKey, parent);
+        obj.field = searchField(fieldMap, subKey, parent, nested);
         if (typeof group[key][subKey] === 'string') {
           obj.subType = 'matchAny';
           obj.value = group[key][subKey];
@@ -178,10 +182,10 @@
       case 'match_phrase':
         var subKey = Object.keys(group[key])[0];
         if (subKey.endsWith('.analyzed')) {
-          obj.field = searchField(fieldMap, subKey.replace('.analyzed', ''), parent);
+          obj.field = searchField(fieldMap, subKey.replace('.analyzed', ''), parent, nested);
         }
         else {
-          obj.field = searchField(fieldMap, subKey, parent);
+          obj.field = searchField(fieldMap, subKey, parent, nested);
         }
         var fieldData = fieldMap[obj.field];
         switch (fieldData.type) {
@@ -218,7 +222,7 @@
     if (!fieldKey) return;
 
     var fieldData = fieldMap[fieldKey];
-    var fieldName = fieldData.field;
+    var fieldName = fieldData.nested ? [fieldData.nested, fieldData.field].join('.') : fieldData.field;
 
     switch (fieldData.type) {
       case 'term':
@@ -428,6 +432,15 @@
       }
     }
 
+    if (fieldData.nested) {
+      obj = {
+        nested: {
+          path: fieldData.path,
+          query: obj
+        }
+      };
+    }
+
     count += 1;
     return obj;
   }
@@ -459,11 +472,11 @@
     return fDate;
   }
 
-  function searchField(fields, fieldName, parent) {
+  function searchField(fields, fieldName, parent, nested) {
     var keys = Object.keys(fields);
     var values = Object.values(fields);
     var index = values.indexOf(values.filter(function(item) {
-      return item.field === fieldName && item.parent === parent;
+      return (item.field === fieldName && item.parent === parent) || ([nested , item.field].join('.') === fieldName && item.nested === nested);
     })[0]);
     return keys[index];
   }
