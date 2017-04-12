@@ -2,7 +2,7 @@
  * # angular-elastic-builder-tienvx
  * ## Angular Module for building an Elasticsearch Query
  *
- * @version v1.17.0
+ * @version v1.17.1
  * @link git@github.com:tienvx/angular-elastic-builder.git
  * @license MIT
  * @author Dan Crews <crewsd@gmail.com>
@@ -761,7 +761,7 @@
     if (fieldData.nested) {
       obj = {
         nested: {
-          path: fieldData.path,
+          path: fieldData.nested,
           query: obj
         }
       };

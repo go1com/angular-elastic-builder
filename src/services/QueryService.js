@@ -435,7 +435,7 @@
     if (fieldData.nested) {
       obj = {
         nested: {
-          path: fieldData.path,
+          path: fieldData.nested,
           query: obj
         }
       };
