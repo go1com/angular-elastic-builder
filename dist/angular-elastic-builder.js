@@ -2,7 +2,7 @@
  * # angular-elastic-builder-tienvx
  * ## Angular Module for building an Elasticsearch Query
  *
- * @version v1.17.1
+ * @version v1.17.2
  * @link git@github.com:tienvx/angular-elastic-builder.git
  * @license MIT
  * @author Dan Crews <crewsd@gmail.com>
@@ -548,7 +548,7 @@
     if (!fieldKey) return;
 
     var fieldData = fieldMap[fieldKey];
-    var fieldName = fieldData.nested ? [fieldData.nested, fieldData.field].join('.') : fieldData.field;
+    var fieldName = fieldData.field;
 
     switch (fieldData.type) {
       case 'term':

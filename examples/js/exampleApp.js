@@ -125,7 +125,7 @@
       'test.match': { field: 'about', title: 'About', type: 'match' },
       'test.select': { field: 'gender', title: 'Gender', type: 'select', choices: [ {id: 'male', label: 'Male'}, {id: 'female', label: 'Female'}, {id: 'other', label: 'Other'} ] },
       'test.parent.term': { field: 'name', parent: 'company', title: 'Company Name', type: 'term' },
-      'test.nested.term': { field: 'name', nested: 'friends', title: 'Friend Name', type: 'term' }
+      'test.nested.term': { field: 'friends.name', nested: 'friends', title: 'Friend Name', type: 'term' }
     };
 
     data.needsUpdate = true;

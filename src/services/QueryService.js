@@ -222,7 +222,7 @@
     if (!fieldKey) return;
 
     var fieldData = fieldMap[fieldKey];
-    var fieldName = fieldData.nested ? [fieldData.nested, fieldData.field].join('.') : fieldData.field;
+    var fieldName = fieldData.field;
 
     switch (fieldData.type) {
       case 'term':
