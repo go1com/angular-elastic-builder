@@ -1,9 +1,15 @@
 <span class="select-rule">
   <span class="rule-text">Equals</span>
 
-  <select
-    data-ng-model="rule.value"
-    class="form-control"
-    data-ng-options="choice as choice.label for choice in guide.choices track by choice.id">
-  </select>
+  <span class="rule-value-group">
+    <select
+      class="form-control"
+      data-ng-model="rule.value"
+      data-ng-options="choice as choice.label for choice in guide.choices track by choice.id">
+    </select>
+
+    <span class="rule-value-helptext" data-ng-if="guide.helpText">
+      {{ guide.helpText }}
+    </span>
+  </span>
 </span>

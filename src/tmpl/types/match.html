@@ -14,8 +14,16 @@
     </optgroup>
   </select>
 
-  <input
-    class="form-control"
-    data-ng-model="rule.value"
-    type="text">
+  <span class="rule-value-group">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="{{ guide.placeholder ? guide.placeholder : '' }}"
+      data-ng-model="rule.value" />
+
+    <span class="rule-value-helptext" data-ng-if="guide.helpText">
+      {{ guide.helpText }}
+    </span>
+  </span>
+
 </span>

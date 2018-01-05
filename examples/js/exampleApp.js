@@ -115,11 +115,11 @@
     ];
 
     data.fields = {
-      'test.number': { field: 'age', title: 'Age', type: 'number', minimum: 18 },
-      'test.term': { field: 'first_name', title: 'First Name', type: 'term' },
+      'test.number': { field: 'age', title: 'Age', type: 'number', minimum: 18, helpText: 'Minimum is 18' },
+      'test.term': { field: 'first_name', title: 'First Name', type: 'term', placeholder: 'My First Name', helpText: 'Do not put your last name here' },
       'test.boolean': { field: 'status', title: 'Status', type: 'boolean' },
       'test.multi': { field: 'state', title: 'State', type: 'multi', choices: [ {id: 'AZ', label: 'Arizona'}, {id: 'CA', label: 'California'}, {id: 'CT', label: 'Connecticut'} ]},
-      'test.contains': { field: 'name', title: 'Name', type: 'contains'},
+      'test.contains': { field: 'name', title: 'Name', type: 'contains', placeholder: 'e.g. Andrew or [CURRENT_USER_NAME]' },
       'test.date': { field: 'dob', title: 'DOB', type: 'date' },
       'test.date2': { field: 'registration_date', title: 'Registration Date', type: 'date' },
       'test.match': { field: 'about', title: 'About', type: 'match' },
