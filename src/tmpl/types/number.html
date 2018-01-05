@@ -18,11 +18,18 @@
   </select>
 
   <!-- Range Fields -->
-  <input data-ng-if="inputNeeded()"
-    class="form-control"
-    data-ng-model="rule.value"
-    type="number"
-    min="{{ guide.minimum }}"
-    max="{{ guide.maximum }}"
-    step="any">
+  <span class="rule-value-group" data-ng-if="inputNeeded()">
+    <input
+      class="form-control"
+      type="number"
+      step="any"
+      min="{{ guide.minimum }}"
+      max="{{ guide.maximum }}"
+      placeholder="{{ guide.placeholder ? guide.placeholder : '' }}"
+      data-ng-model="rule.value" />
+
+    <span class="rule-value-helptext" data-ng-if="guide.helpText">
+      {{ guide.helpText }}
+    </span>
+  </span>
 </span>

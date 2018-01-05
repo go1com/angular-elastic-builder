@@ -2,9 +2,15 @@
   <span class="rule-text">Equals</span>
 
   <!-- This is a weird hack to make sure these are numbers -->
-  <select
-    data-ng-model="rule.value"
-    class="form-control"
-    data-ng-options="booleans.indexOf(choice) as choice for choice in booleansOrder">
-  </select>
+  <span class="rule-value-group">
+    <select
+      class="form-control"
+      data-ng-model="rule.value"
+      data-ng-options="booleans.indexOf(choice) as choice for choice in booleansOrder">
+    </select>
+
+    <span class="rule-value-helptext" data-ng-if="guide.helpText">
+      {{ guide.helpText }}
+    </span>
+  </span>
 </span>

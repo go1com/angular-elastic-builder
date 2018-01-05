@@ -23,8 +23,8 @@
 
         link: function(scope) {
           scope.getType = function() {
-            var fieldMap = scope.elasticFields
-              , fieldName = scope.rule.field;
+            var fieldMap = scope.elasticFields,
+              fieldName = scope.rule.field;
 
             if (!fieldMap || !fieldName) return;
 
