@@ -92,7 +92,7 @@
         switch (fieldData.type) {
           case 'multi':
             var vals = group[key][subKey];
-            if (typeof vals === 'string') vals = [ vals ];
+            if (typeof vals === 'string' || typeof vals === 'number') vals = [ vals ];
             obj.values = [];
             fieldData.choices.forEach(function (choice) {
               if (vals.indexOf(choice.id) !== -1) {
