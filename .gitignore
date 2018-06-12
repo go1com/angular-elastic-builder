@@ -29,6 +29,7 @@ release
 buildversion
 version.prop
 npm-shrinkwrap.json
+package-lock.json
 
 test/reports
 .npmrc
