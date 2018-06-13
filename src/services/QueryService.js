@@ -474,7 +474,9 @@
 
   function searchField(fields, fieldName, parent, nested) {
     var keys = Object.keys(fields);
-    var values = Object.values(fields);
+    var values = keys.map(function(key) {
+      return fields[key];
+    });
     var index = values.indexOf(values.filter(function(item) {
       return (item.field === fieldName && item.parent === parent) || ([nested , item.field].join('.') === fieldName && item.nested === nested);
     })[0]);
