@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 /**
  * angular-elastic-builder
  *
@@ -329,12 +331,12 @@
 
         switch (group.subType) {
           case 'equals':
-            if (!angular.isDate(group.date)) return;
+            if (!group.date || (group.date && !moment(group.date).isValid())) return;
             obj.term = {};
             obj.term[fieldName] = formatDate($filter, group.date);
             break;
           case 'notEquals':
-            if (!angular.isDate(group.date)) return;
+            if (!group.date || (group.date && !moment(group.date).isValid())) return;
             obj.bool = { must_not: { term: {}}};
             obj.bool.must_not.term[fieldName] = formatDate($filter, group.date);
             break;
@@ -342,7 +344,7 @@
           case 'lte':
           case 'gt':
           case 'gte':
-            if (!angular.isDate(group.date)) return;
+            if (!group.date || (group.date && !moment(group.date).isValid())) return;
             obj.range = {};
             obj.range[fieldName] = {};
             obj.range[fieldName][group.subType] = formatDate($filter, group.date);
@@ -466,7 +468,7 @@
   }
 
   function formatDate($filter, date) {
-    if (!angular.isDate(date)) return false;
+    if (!date || (date && !moment(date).isValid())) return false;
     var dateFormat = 'yyyy-MM-ddTHH:mm:ssZ';
     var fDate = $filter('date')(date, dateFormat);
     return fDate;
