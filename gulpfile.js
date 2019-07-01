@@ -10,7 +10,10 @@ var concat = require('gulp-concat')
   , uglifyjs = require('gulp-uglifyjs')
   , uglifycss = require('gulp-uglifycss')
   , util = require('util')
-  , eslint = require('gulp-eslint');
+  , eslint = require('gulp-eslint')
+  , webpack = require('webpack')
+  , webpackStream = require('webpack-stream')
+  , webpackConfig = require('./webpack.production.config.js');
 
 /**
  * Local Dependencies
@@ -39,6 +42,7 @@ gulp.task('clean', function(done) {
 
 gulp.task('concatjs', [ 'clean', 'templatecache' ], function() {
   return gulp.src(['./src/module.js', './src/directives/*.js', './src/services/*.js', './src/tmpl/ElasticBuilderTemplates.js'])
+    .pipe(webpackStream(webpackConfig), webpack)
     .pipe(concat(util.format('%s.js', 'angular-elastic-builder')))
     .pipe(gulp.dest('./dist'));
 });
