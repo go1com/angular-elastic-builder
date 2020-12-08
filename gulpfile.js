@@ -31,50 +31,11 @@ var banner = ['/**'
   , ''
   , ''].join('\n');
 
-gulp.task('build', ['uglifyjs', 'uglifycss']);
-gulp.task('default', ['build']);
-
-
 gulp.task('clean', function(done) {
   del(['./dist'], done);
 });
 
-
-gulp.task('concatjs', [ 'clean', 'templatecache' ], function() {
-  return gulp.src(['./src/module.js', './src/directives/*.js', './src/services/*.js', './src/tmpl/ElasticBuilderTemplates.js'])
-    .pipe(webpackStream(webpackConfig), webpack)
-    .pipe(concat(util.format('%s.js', 'angular-elastic-builder')))
-    .pipe(gulp.dest('./dist'));
-});
-
-
-gulp.task('concatcss', [ 'clean' ], function() {
-  return gulp.src('./src/styles/main.css')
-    .pipe(concat(util.format('%s.css', 'angular-elastic-builder')))
-    .pipe(gulp.dest('./dist'));
-});
-
-gulp.task('header', [ 'concatjs', 'concatcss'], function() {
-  return gulp.src(['./dist/*.js', './dist/*.css'])
-    .pipe(header(banner, { pkg: pkg }))
-    .pipe(gulp.dest('./dist'));
-});
-
-gulp.task('uglifyjs', [ 'header' ], function() {
-  return gulp.src('./dist/*.js')
-    .pipe(uglifyjs())
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest('./dist'));
-});
-
-gulp.task('uglifycss', [ 'header' ], function() {
-  return gulp.src('./dist/*.css')
-    .pipe(uglifycss())
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest('./dist'));
-});
-
-gulp.task('templatecache', [  ], function() {
+gulp.task('templatecache', gulp.series( 'clean', function() {
   var TEMPLATE_HEADER = '(function(angular) {"use strict"; angular.module("<%= module %>"<%= standalone %>).run(["$templateCache", function($templateCache) {'
     , TEMPLATE_FOOTER = '}]);})(window.angular);';
 
@@ -87,21 +48,58 @@ gulp.task('templatecache', [  ], function() {
     }))
     .pipe(rename('ElasticBuilderTemplates.js'))
     .pipe(gulp.dest('src/tmpl'));
-});
+}));
+
+gulp.task('concatjs', gulp.series('clean', 'templatecache', (done) => {
+  return gulp.src(['./src/module.js', './src/directives/*.js', './src/services/*.js', './src/tmpl/ElasticBuilderTemplates.js'])
+    .pipe(webpackStream(webpackConfig), webpack)
+    .pipe(concat(util.format('%s.js', 'angular-elastic-builder')))
+    .pipe(gulp.dest('./dist'));
+}));
+
+
+gulp.task('concatcss', gulp.series('clean', function() {
+  return gulp.src('./src/styles/main.css')
+    .pipe(concat(util.format('%s.css', 'angular-elastic-builder')))
+    .pipe(gulp.dest('./dist'));
+}));
+
+gulp.task('header', gulp.series('concatjs', 'concatcss', function() {
+  return gulp.src(['./dist/*.js', './dist/*.css'])
+    .pipe(header(banner, { pkg: pkg }))
+    .pipe(gulp.dest('./dist'));
+}));
+
+gulp.task('uglifyjs', gulp.series('header', function() {
+  return gulp.src('./dist/*.js')
+    .pipe(uglifyjs())
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(gulp.dest('./dist'));
+}));
+
+gulp.task('uglifycss', gulp.series('header', function() {
+  return gulp.src('./dist/*.css')
+    .pipe(uglifycss())
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(gulp.dest('./dist'));
+}));
 
 gulp.task('lint', function() {
   return gulp.src([
-      'src/**/**.js',
-      '!src/tmpl/ElasticBuilderTemplates.js',
-    ])
+    'src/**/**.js',
+    '!src/tmpl/ElasticBuilderTemplates.js',
+  ])
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
 });
 
-gulp.task('watch', [ 'templatecache', 'build' ], function() {
+gulp.task('build', gulp.series('uglifyjs', 'uglifycss'));
+
+gulp.task('default', gulp.series('build'));
+
+gulp.task('watch', gulp.series('templatecache', 'build', function() {
   gulp.watch('src/tmpl/**/*.html', [ 'templatecache', 'build' ]);
   gulp.watch('src/styles/*.css', [ 'build' ]);
-  gulp.watch(['src/**/**.js','!src/tmpl/ElasticBuilderTemplates.js'], [ 'build' ]);
-});
-
+  gulp.watch(['src/**/**.js', '!src/tmpl/ElasticBuilderTemplates.js'], [ 'build' ]);
+}));
