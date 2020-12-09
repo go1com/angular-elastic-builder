@@ -32,10 +32,11 @@ var banner = ['/**'
   , ''].join('\n');
 
 gulp.task('clean', function(done) {
-  del(['./dist'], done);
+  del(['./dist']);
+  done();
 });
 
-gulp.task('templatecache', gulp.series( 'clean', function() {
+gulp.task('templatecache', gulp.series( function() {
   var TEMPLATE_HEADER = '(function(angular) {"use strict"; angular.module("<%= module %>"<%= standalone %>).run(["$templateCache", function($templateCache) {'
     , TEMPLATE_FOOTER = '}]);})(window.angular);';
 
@@ -50,15 +51,14 @@ gulp.task('templatecache', gulp.series( 'clean', function() {
     .pipe(gulp.dest('src/tmpl'));
 }));
 
-gulp.task('concatjs', gulp.series('clean', 'templatecache', (done) => {
+gulp.task('concatjs', gulp.series('templatecache', function() {
   return gulp.src(['./src/module.js', './src/directives/*.js', './src/services/*.js', './src/tmpl/ElasticBuilderTemplates.js'])
     .pipe(webpackStream(webpackConfig), webpack)
     .pipe(concat(util.format('%s.js', 'angular-elastic-builder')))
     .pipe(gulp.dest('./dist'));
 }));
 
-
-gulp.task('concatcss', gulp.series('clean', function() {
+gulp.task('concatcss', gulp.series(function() {
   return gulp.src('./src/styles/main.css')
     .pipe(concat(util.format('%s.css', 'angular-elastic-builder')))
     .pipe(gulp.dest('./dist'));
@@ -96,10 +96,10 @@ gulp.task('lint', function() {
 
 gulp.task('build', gulp.series('uglifyjs', 'uglifycss'));
 
-gulp.task('default', gulp.series('build'));
-
 gulp.task('watch', gulp.series('templatecache', 'build', function() {
   gulp.watch('src/tmpl/**/*.html', [ 'templatecache', 'build' ]);
   gulp.watch('src/styles/*.css', [ 'build' ]);
   gulp.watch(['src/**/**.js', '!src/tmpl/ElasticBuilderTemplates.js'], [ 'build' ]);
 }));
+
+gulp.task('default', gulp.series('clean', 'build'));

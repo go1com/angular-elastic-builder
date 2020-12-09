@@ -1,16 +1,16 @@
 <span class="match-rule">
   <select data-ng-model="rule.subType" class="form-control">
     <!-- Term Options -->
-    <optgroup label="Contains">
-      <option value="matchAll">Contains All Words</option>
-      <option value="matchAny">Contains Any Words</option>
-      <option value="matchPhrase">Contains Phrase</option>
+    <optgroup label="{{ 'Contains' | translate }}">
+      <option value="matchAll" translate>Contains All Words</option>
+      <option value="matchAny" translate>Contains Any Words</option>
+      <option value="matchPhrase" translate>Contains Phrase</option>
     </optgroup>
 
     <!-- Generic Options -->
-    <optgroup label="Generic">
-      <option value="exists">Exists</option>
-      <option value="notExists">Not Exists</option>
+    <optgroup label="{{ 'Generic' | translate }}">
+      <option value="exists" translate>Exists</option>
+      <option value="notExists" translate>Not Exists</option>
     </optgroup>
   </select>
 
