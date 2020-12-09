@@ -1,22 +1,22 @@
 <span class="date-rule form-inline">
   <select data-ng-model="rule.subType" class="form-control">
-    <optgroup label="Exact">
-      <option value="equals">Equals</option>
-      <option value="notEquals">Not Equals</option>
+    <optgroup label="{{ 'Exact' | translate }}">
+      <option value="equals" translate>Equals</option>
+      <option value="notEquals" translate>Not Equals</option>
     </optgroup>
-    <optgroup label="Unbounded-range">
+    <optgroup label="{{ 'Unbounded-range' | translate }}">
       <option value="lt">&lt;</option>
       <option value="lte">&le;</option>
       <option value="gt">&gt;</option>
       <option value="gte">&ge;</option>
     </optgroup>
-    <optgroup label="Bounded-range">
-      <option value="last">In the last</option>
-      <option value="next">In the next</option>
+    <optgroup label="{{ 'Bounded-range' | translate }}">
+      <option value="last" translate>In the last</option>
+      <option value="next" translate>In the next</option>
     </optgroup>
-    <optgroup label="Generic">
-      <option value="exists">Exists</option>
-      <option value="notExists">Not Exists</option>
+    <optgroup label="{{ 'Generic' | translate }}">
+      <option value="exists" translate>Exists</option>
+      <option value="notExists" translate>Not Exists</option>
     </optgroup>
   </select>
 
@@ -35,7 +35,7 @@
   </div>
 
   <span data-ng-if="numberNeeded()">
-    <input type="number" class="form-control" data-ng-model="rule.value" min=0> <span class="rule-text">days</span>
+    <input type="number" class="form-control" data-ng-model="rule.value" min=0> <span class="rule-text" translate>days</span>
   </span>
 
 </span>

@@ -1,19 +1,19 @@
 <span class="number-rule">
   <select data-ng-model="rule.subType" class="form-control">
-    <optgroup label="Exact">
-      <option value="equals">Equals</option>
-      <option value="notEquals">Not Equals</option>
+    <optgroup label="{{ 'Exact' | translate }}">
+      <option value="equals" translate>Equals</option>
+      <option value="notEquals" translate>Not Equals</option>
     </optgroup>
-    <optgroup label="Range">
+    <optgroup label="{{ 'Range' | translate }}">
       <option value="gt">&gt;</option>
       <option value="gte">&ge;</option>
       <option value="lt">&lt;</option>
       <option value="lte">&le;</option>
     </optgroup>
 
-    <optgroup label="Generic">
-      <option value="exists">Exists</option>
-      <option value="notExists">Not Exists</option>
+    <optgroup label="{{ 'Generic' | translate }}">
+      <option value="exists" translate>Exists</option>
+      <option value="notExists" translate>Not Exists</option>
     </optgroup>
   </select>
 

@@ -1,15 +1,15 @@
 <span class="term-rule">
   <select data-ng-model="rule.subType" class="form-control">
     <!-- Term Options -->
-    <optgroup label="Exact">
-      <option value="equals">Equals</option>
-      <option value="notEquals">Not Equals</option>
+    <optgroup label="{{ 'Exact' | translate }}">
+      <option value="equals" translate>Equals</option>
+      <option value="notEquals" translate>Not Equals</option>
     </optgroup>
 
     <!-- Generic Options -->
-    <optgroup label="Generic">
-      <option value="exists">Exists</option>
-      <option value="notExists">Not Exists</option>
+    <optgroup label="{{ 'Generic' | translate }}">
+      <option value="exists" translate>Exists</option>
+      <option value="notExists" translate>Not Exists</option>
     </optgroup>
 
   </select>
